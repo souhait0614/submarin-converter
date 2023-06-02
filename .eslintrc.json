@@ -1,0 +1,99 @@
+{
+  "env": {
+    "node": true,
+    "es2022": true
+  },
+  "extends": [
+    "airbnb-base",
+    "airbnb-typescript/base",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  },
+  "plugins": ["@typescript-eslint", "import", "unused-imports", "jsdoc"],
+  "settings": {
+    "import/resolver": {
+      "typescript": {}
+    }
+  },
+  "ignorePatterns": ["vite.config.*"],
+  "rules": {
+    "quotes": ["error", "double"],
+    "quote-props": ["error", "as-needed"],
+    "semi": ["error", "never"],
+    "lines-around-comment": [
+      "error",
+      {
+        "beforeLineComment": true,
+        "allowBlockStart": true,
+        "allowClassStart": true,
+        "allowObjectStart": true,
+        "allowArrayStart": true
+      }
+    ],
+    "import/order": [
+      "error",
+      {
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          ["parent", "sibling"],
+          "object",
+          "type",
+          "index"
+        ],
+        "newlines-between": "always",
+        "pathGroupsExcludedImportTypes": ["builtin"],
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ],
+    "import/extensions": ["error", "never"],
+    "import/prefer-default-export": 0,
+    "import/no-default-export": ["error"],
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "default",
+        "format": ["strictCamelCase"]
+      },
+      {
+        "selector": "variable",
+        "modifiers": ["const"],
+        "types": ["function"],
+        "format": ["strictCamelCase", "StrictPascalCase"]
+      },
+      {
+        "selector": "typeLike",
+        "format": ["StrictPascalCase"]
+      },
+      {
+        "selector": "typeParameter",
+        "format": ["PascalCase"]
+      },
+      {
+        "selector": "objectLiteralMethod",
+        "format": []
+      },
+      {
+        "selector": "property",
+        "format": []
+      }
+    ],
+    "@typescript-eslint/consistent-type-definitions": "error",
+    "no-unused-vars": "off",
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      { "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
+    ],
+    "@typescript-eslint/consistent-type-imports": "error"
+  }
+}
