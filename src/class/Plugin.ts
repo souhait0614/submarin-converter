@@ -63,8 +63,6 @@ export class Plugin<TOption = unknown> {
         error: [],
       })
     )
-    // eslint-disable-next-line @typescript-eslint/no-throw-literal
-    if (!result.ok) throw result.error
-    return result.output
+    return result
   }
 }

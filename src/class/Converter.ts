@@ -19,6 +19,7 @@ export interface ConverterConfig<TPlugins extends Readonly<Plugins>> {
 export type ConverterResultDetail = {
   id: string
   args: ConvertFunctionArgs
+  error: unknown[]
 } & (
   | {
       ok: true
@@ -26,7 +27,6 @@ export type ConverterResultDetail = {
     }
   | {
       ok: false
-      error: unknown[]
     }
 )
 
@@ -52,15 +52,18 @@ export class Converter<TPlugins extends Readonly<Plugins<any>>> {
       try {
         const plugin = this.#plugins[id]
         if (!plugin) throw new TypeError(`The plugin '${String(id)}' was not found.`)
-        const output = await plugin.convert({ input: prevOutput, option })
+        const result = await plugin.convert({ input: prevOutput, option })
+        // eslint-disable-next-line @typescript-eslint/no-throw-literal
+        if (!result.ok) throw result.error
         return [
-          output,
+          result.output,
           [
             ...prevDetails,
             {
               id,
               ok: true,
-              output,
+              error: result.error,
+              output: result.output,
               args: {
                 input: prevOutput,
                 option,
