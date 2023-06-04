@@ -21,16 +21,7 @@ describe("Converter", () => {
       },
     })
 
-    const [result, detail] = await converter.convert(input, [
-      {
-        id: "example1",
-      },
-      {
-        id: "example2",
-      },
-    ])
-
-    detail[0].id
+    const [result] = await converter.convert(input, [{ id: "example1" }, { id: "example2" }])
 
     expect(result).toEqual("THIS IS A VERY COOOOOOOOOOL LIBRARY.")
   })
@@ -78,11 +69,11 @@ describe("Converter", () => {
   })
   it("ConvertOption", async () => {
     const exampleOptionConverter1 = ({ input, option }: PluginConvertFunctionArgs<string>) =>
-      input + option
+      `${input} ${option}`
     const exampleOptionConverter2 = ({ input, option = 1 }: PluginConvertFunctionArgs<number>) =>
-      [...Array(option - 1)].reduce<string>((prev) => prev + input, input)
+      [...Array(option - 1)].reduce<string>((prev) => `${prev} ${input}`, input)
 
-    const source = "very "
+    const source = "very"
 
     const converter = new Converter({
       plugins: {

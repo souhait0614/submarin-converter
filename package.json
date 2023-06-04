@@ -1,16 +1,16 @@
 {
-  "name": "submarin-converter-core-3",
+  "name": "submarin-converter",
   "version": "0.1.0",
   "author": "souhait",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/souhait0614/submarin-converter-core-3.git"
+    "url": "git+https://github.com/souhait0614/submarin-converter.git"
   },
   "bugs": {
-    "url": "https://github.com/souhait0614/submarin-converter-core-3/issues"
+    "url": "https://github.com/souhait0614/submarin-converter/issues"
   },
-  "homepage": "https://github.com/souhait0614/submarin-converter-core-3#readme",
+  "homepage": "https://github.com/souhait0614/submarin-converter#readme",
   "type": "module",
   "types": "./dist/index.d.ts",
   "files": [
