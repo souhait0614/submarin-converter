@@ -20,7 +20,7 @@
       "typescript": {}
     }
   },
-  "ignorePatterns": ["vite.config.*"],
+  "ignorePatterns": ["vite.config.*", "/test"],
   "rules": {
     "quotes": ["error", "double"],
     "quote-props": ["error", "as-needed"],
