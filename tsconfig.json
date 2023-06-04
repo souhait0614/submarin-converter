@@ -7,10 +7,9 @@
     "lib": ["ESNext", "DOM"],
     "moduleResolution": "Node",
     "resolveJsonModule": true,
-    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
     "esModuleInterop": true,
-    "noEmit": true,
-    "verbatimModuleSyntax": true
+    "noEmit": true
   },
   "include": ["src"]
 }
