@@ -18,6 +18,12 @@ export interface PluginConfig<TOption = unknown> {
   metaData?: MetaData
 }
 
+export interface ConvertResult {
+  ok: boolean
+  output: string
+  error: unknown[]
+}
+
 export class Plugin<TOption = unknown> {
   #convertFunction: ConvertFunction<TOption>[]
 
@@ -33,12 +39,7 @@ export class Plugin<TOption = unknown> {
   }
 
   async convert(args: ConvertFunctionArgs<TOption>) {
-    interface ConvertResult {
-      ok: boolean
-      output: string
-      error: unknown[]
-    }
-    const result = await this.#convertFunction.reduce<Promise<ConvertResult>>(
+    return this.#convertFunction.reduce<Promise<ConvertResult>>(
       async (acc, func) => {
         const awaitedAcc = await acc
         if (awaitedAcc.ok) return awaitedAcc
@@ -63,6 +64,5 @@ export class Plugin<TOption = unknown> {
         error: [],
       })
     )
-    return result
   }
 }
