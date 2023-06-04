@@ -1,4 +1,4 @@
-import type { ConvertFunctionArgs, Plugin } from "./Plugin"
+import type { PluginConvertFunctionArgs, Plugin } from "./Plugin"
 import type { ValueOf } from "type-fest"
 
 export type Plugins<T = unknown> = Record<string, Plugin<T>>
@@ -18,7 +18,7 @@ export interface ConverterConfig<TPlugins extends Readonly<Plugins>> {
 
 export type ConverterResultDetail = {
   id: string
-  args: ConvertFunctionArgs
+  args: PluginConvertFunctionArgs
   error: unknown[]
 } & (
   | {

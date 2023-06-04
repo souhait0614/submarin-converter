@@ -1,33 +1,33 @@
 import type { Promisable } from "type-fest"
 
-export interface ConvertFunctionArgs<T = unknown> {
+export interface PluginConvertFunctionArgs<T = unknown> {
   input: string
   option?: T
 }
-export type ConvertFunction<TOption = unknown> = (
-  args: ConvertFunctionArgs<TOption>
+export type PluginConvertFunction<TOption = unknown> = (
+  args: PluginConvertFunctionArgs<TOption>
 ) => Promisable<string>
 
-export interface MetaData {
+export interface PluginMetaData {
   name?: string
   description?: string
 }
 
 export interface PluginConfig<TOption = unknown> {
-  convertFunction: ConvertFunction<TOption>[]
-  metaData?: MetaData
+  convertFunction: PluginConvertFunction<TOption>[]
+  metaData?: PluginMetaData
 }
 
-export interface ConvertResult {
+export interface PluginConvertResult {
   ok: boolean
   output: string
   error: unknown[]
 }
 
 export class Plugin<TOption = unknown> {
-  #convertFunction: ConvertFunction<TOption>[]
+  #convertFunction: PluginConvertFunction<TOption>[]
 
-  #metaData: MetaData
+  #metaData: PluginMetaData
 
   constructor(config: PluginConfig<TOption>) {
     this.#convertFunction = config.convertFunction
@@ -38,14 +38,14 @@ export class Plugin<TOption = unknown> {
     return this.#metaData
   }
 
-  async convert(args: ConvertFunctionArgs<TOption>) {
-    return this.#convertFunction.reduce<Promise<ConvertResult>>(
+  async convert(args: PluginConvertFunctionArgs<TOption>) {
+    return this.#convertFunction.reduce<Promise<PluginConvertResult>>(
       async (acc, func) => {
         const awaitedAcc = await acc
         if (awaitedAcc.ok) return awaitedAcc
         try {
           const output = await func(args)
-          const res: ConvertResult = {
+          const res: PluginConvertResult = {
             ok: true,
             output,
             error: [...awaitedAcc.error],

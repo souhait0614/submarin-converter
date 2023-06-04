@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest"
 
-import { ConvertFunctionArgs, Converter, Plugin } from "../src"
+import { PluginConvertFunctionArgs, Converter, Plugin } from "../src"
 
-const exampleConverter1 = ({ input }: ConvertFunctionArgs) => input.toUpperCase()
-const exampleConverter2 = ({ input }: ConvertFunctionArgs) => input.replace(/O/g, "OOOOO")
+const exampleConverter1 = ({ input }: PluginConvertFunctionArgs) => input.toUpperCase()
+const exampleConverter2 = ({ input }: PluginConvertFunctionArgs) => input.replace(/O/g, "OOOOO")
 
 const dummyError = new Error("dummy error")
 const errorConverter = () => {
@@ -77,9 +77,9 @@ describe("Converter", () => {
     expect(example1Detail.error).toEqual([dummyError])
   })
   it("ConvertOption", async () => {
-    const exampleOptionConverter1 = ({ input, option }: ConvertFunctionArgs<string>) =>
+    const exampleOptionConverter1 = ({ input, option }: PluginConvertFunctionArgs<string>) =>
       input + option
-    const exampleOptionConverter2 = ({ input, option = 1 }: ConvertFunctionArgs<number>) =>
+    const exampleOptionConverter2 = ({ input, option = 1 }: PluginConvertFunctionArgs<number>) =>
       [...Array(option - 1)].reduce<string>((prev) => prev + input, input)
 
     const source = "very "
