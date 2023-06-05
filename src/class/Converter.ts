@@ -16,9 +16,9 @@ export interface ConverterConfig<TPlugins extends Readonly<Plugins>> {
   plugins: TPlugins
 }
 
-export type ConverterResultDetail = {
-  id: string
-  args: PluginConvertFunctionArgs
+export type ConverterResultDetail<TConvertOption extends ConvertOption<Plugins>> = {
+  id: TConvertOption["id"]
+  args: PluginConvertFunctionArgs<TConvertOption["option"]>
   error: unknown[]
 } & (
   | {
@@ -31,10 +31,13 @@ export type ConverterResultDetail = {
 )
 
 export type ConverterResultDetails<TConvertOptions extends readonly ConvertOption<Plugins>[]> = {
-  [Index in keyof TConvertOptions]: ConverterResultDetail
+  [Index in keyof TConvertOptions]: ConverterResultDetail<TConvertOptions[Index]>
 }
 
-export type ConverterResult = [string, ConverterResultDetail[]]
+export type ConverterResult<TConvertOptions extends readonly ConvertOption<Plugins>[]> = [
+  string,
+  ConverterResultDetails<TConvertOptions>
+]
 
 export class Converter<TPlugins extends Readonly<Plugins<any>>> {
   #plugins: TPlugins
@@ -46,8 +49,10 @@ export class Converter<TPlugins extends Readonly<Plugins<any>>> {
   async convert<TConvertOptions extends readonly ConvertOption<TPlugins>[]>(
     input: string,
     options: TConvertOptions
-  ): Promise<ConverterResult> {
-    return options.reduce<Promise<ConverterResult>>(async (acc, { id, option }) => {
+  ): Promise<ConverterResult<TConvertOptions>> {
+    const results: ConverterResult<readonly ConvertOption<Plugins>[]> = await options.reduce<
+      Promise<ConverterResult<readonly ConvertOption<Plugins>[]>>
+    >(async (acc, { id, option }) => {
       const [prevOutput, prevDetails] = await acc
       try {
         const plugin = this.#plugins[id]
@@ -89,5 +94,6 @@ export class Converter<TPlugins extends Readonly<Plugins<any>>> {
         ]
       }
     }, Promise.resolve([input, []]))
+    return results as ConverterResult<TConvertOptions>
   }
 }
