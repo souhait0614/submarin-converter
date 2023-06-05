@@ -3,7 +3,8 @@ import type { ValueOf } from "type-fest"
 
 export type Plugins<T = unknown> = Record<string, Plugin<T>>
 
-export type ConvertOption<TPlugins extends Plugins> = ValueOf<{
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ConvertOption<TPlugins extends Plugins<any>> = ValueOf<{
   [Id in keyof TPlugins]: {
     id: Extract<Id, string>
     option?: TPlugins[Id] extends Plugin<infer R> ? R : never
