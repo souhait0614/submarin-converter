@@ -45,12 +45,11 @@ export class Plugin<TOption = unknown> {
         if (awaitedAcc.ok) return awaitedAcc
         try {
           const output = await func(args)
-          const res: PluginConvertResult = {
+          return {
             ok: true,
             output,
             error: [...awaitedAcc.error],
           }
-          return res
         } catch (error) {
           return {
             ...awaitedAcc,

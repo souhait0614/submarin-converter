@@ -3,14 +3,12 @@ import type { ValueOf } from "type-fest"
 
 export type Plugins<T = unknown> = Record<string, Plugin<T>>
 
-export type ConvertOptionObject<TPlugins extends Plugins> = {
+export type ConvertOption<TPlugins extends Plugins> = ValueOf<{
   [Id in keyof TPlugins]: {
     id: Extract<Id, string>
     option?: TPlugins[Id] extends Plugin<infer R> ? R : never
   }
-}
-
-export type ConvertOption<TPlugins extends Plugins> = ValueOf<ConvertOptionObject<TPlugins>>
+}>
 
 export interface ConverterConfig<TPlugins extends Readonly<Plugins>> {
   plugins: TPlugins
@@ -39,6 +37,7 @@ export type ConverterResult<TConvertOptions extends readonly ConvertOption<Plugi
   ConverterResultDetails<TConvertOptions>
 ]
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class Converter<TPlugins extends Readonly<Plugins<any>>> {
   #plugins: TPlugins
 
@@ -57,18 +56,18 @@ export class Converter<TPlugins extends Readonly<Plugins<any>>> {
       try {
         const plugin = this.#plugins[id]
         if (!plugin) throw new TypeError(`The plugin '${String(id)}' was not found.`)
-        const result = await plugin.convert({ input: prevOutput, option })
+        const { ok, error, output } = await plugin.convert({ input: prevOutput, option })
         // eslint-disable-next-line @typescript-eslint/no-throw-literal
-        if (!result.ok) throw result.error
+        if (!ok) throw error
         return [
-          result.output,
+          output,
           [
             ...prevDetails,
             {
               id,
-              ok: true,
-              error: result.error,
-              output: result.output,
+              ok,
+              error,
+              output,
               args: {
                 input: prevOutput,
                 option,
@@ -78,7 +77,7 @@ export class Converter<TPlugins extends Readonly<Plugins<any>>> {
         ]
       } catch (error) {
         return [
-          input,
+          prevOutput,
           [
             ...prevDetails,
             {
