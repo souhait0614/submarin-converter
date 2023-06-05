@@ -1,12 +1,10 @@
 import { describe, expect, it } from "vitest"
 
 import {
-  PluginConvertFunctionArgs,
   Converter,
   Plugin,
   PluginConvertFunction,
   ConverterResultDetails,
-  ConverterResultDetail,
   Plugins,
   ConvertOption,
 } from "../src"
