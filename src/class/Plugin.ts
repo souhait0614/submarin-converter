@@ -18,11 +18,18 @@ export interface PluginConfig<TOption = unknown> {
   metaData?: PluginMetaData
 }
 
-export interface PluginConvertResult {
-  ok: boolean
-  output: string
+export type PluginConvertResult = {
   error: unknown[]
-}
+} & (
+  | {
+      ok: true
+      output: string
+    }
+  | {
+      ok: false
+      output?: never
+    }
+)
 
 export class Plugin<TOption = unknown> {
   #convertFunction: PluginConvertFunction<TOption>[]
@@ -45,12 +52,11 @@ export class Plugin<TOption = unknown> {
         if (awaitedAcc.ok) return awaitedAcc
         try {
           const output = await func(args)
-          const res: PluginConvertResult = {
+          return {
             ok: true,
             output,
             error: [...awaitedAcc.error],
           }
-          return res
         } catch (error) {
           return {
             ...awaitedAcc,
@@ -60,7 +66,6 @@ export class Plugin<TOption = unknown> {
       },
       Promise.resolve({
         ok: false,
-        output: "",
         error: [],
       })
     )

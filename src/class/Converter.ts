@@ -3,22 +3,21 @@ import type { ValueOf } from "type-fest"
 
 export type Plugins<T = unknown> = Record<string, Plugin<T>>
 
-export type ConvertOptionObject<TPlugins extends Plugins> = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ConvertOption<TPlugins extends Plugins<any>> = ValueOf<{
   [Id in keyof TPlugins]: {
     id: Extract<Id, string>
     option?: TPlugins[Id] extends Plugin<infer R> ? R : never
   }
-}
-
-export type ConvertOption<TPlugins extends Plugins> = ValueOf<ConvertOptionObject<TPlugins>>
+}>
 
 export interface ConverterConfig<TPlugins extends Readonly<Plugins>> {
   plugins: TPlugins
 }
 
-export type ConverterResultDetail = {
-  id: string
-  args: PluginConvertFunctionArgs
+export type ConverterResultDetail<TConvertOption extends ConvertOption<Plugins>> = {
+  id: TConvertOption["id"]
+  args: PluginConvertFunctionArgs<TConvertOption["option"]>
   error: unknown[]
 } & (
   | {
@@ -31,11 +30,15 @@ export type ConverterResultDetail = {
 )
 
 export type ConverterResultDetails<TConvertOptions extends readonly ConvertOption<Plugins>[]> = {
-  [Index in keyof TConvertOptions]: ConverterResultDetail
+  [Index in keyof TConvertOptions]: ConverterResultDetail<TConvertOptions[Index]>
 }
 
-export type ConverterResult = [string, ConverterResultDetail[]]
+export type ConverterResult<TConvertOptions extends readonly ConvertOption<Plugins>[]> = [
+  string,
+  ConverterResultDetails<TConvertOptions>
+]
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class Converter<TPlugins extends Readonly<Plugins<any>>> {
   #plugins: TPlugins
 
@@ -46,24 +49,26 @@ export class Converter<TPlugins extends Readonly<Plugins<any>>> {
   async convert<TConvertOptions extends readonly ConvertOption<TPlugins>[]>(
     input: string,
     options: TConvertOptions
-  ): Promise<ConverterResult> {
-    return options.reduce<Promise<ConverterResult>>(async (acc, { id, option }) => {
+  ): Promise<ConverterResult<TConvertOptions>> {
+    const results: ConverterResult<readonly ConvertOption<Plugins>[]> = await options.reduce<
+      Promise<ConverterResult<readonly ConvertOption<Plugins>[]>>
+    >(async (acc, { id, option }) => {
       const [prevOutput, prevDetails] = await acc
       try {
         const plugin = this.#plugins[id]
         if (!plugin) throw new TypeError(`The plugin '${String(id)}' was not found.`)
-        const result = await plugin.convert({ input: prevOutput, option })
+        const { ok, error, output } = await plugin.convert({ input: prevOutput, option })
         // eslint-disable-next-line @typescript-eslint/no-throw-literal
-        if (!result.ok) throw result.error
+        if (!ok) throw error
         return [
-          result.output,
+          output,
           [
             ...prevDetails,
             {
               id,
-              ok: true,
-              error: result.error,
-              output: result.output,
+              ok,
+              error,
+              output,
               args: {
                 input: prevOutput,
                 option,
@@ -73,7 +78,7 @@ export class Converter<TPlugins extends Readonly<Plugins<any>>> {
         ]
       } catch (error) {
         return [
-          input,
+          prevOutput,
           [
             ...prevDetails,
             {
@@ -89,5 +94,6 @@ export class Converter<TPlugins extends Readonly<Plugins<any>>> {
         ]
       }
     }, Promise.resolve([input, []]))
+    return results as ConverterResult<TConvertOptions>
   }
 }
