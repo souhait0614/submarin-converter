@@ -1,40 +1,104 @@
 # submarin-converter
 
-![npm](https://img.shields.io/npm/v/submarin-converter?style=flat-square)
+いい感じの型が付いた TypeScript 製文字変換ライブラリ
 
-文書変換するやつ
+<a href="/LICENSE" target="_blank">
+  <img
+    src="https://img.shields.io/github/license/souhait0614/submarin-converter?style=flat-square"
+    alt="license"
+  >
+</a>
+<a href="https://www.npmjs.com/package/submarin-converter" target="_blank">
+  <img src="https://img.shields.io/npm/v/submarin-converter?style=flat-square" alt="npm">
+</a>
+<a href="https://bundlephobia.com/package/submarin-converter" target="_blank">
+  <img
+    src="https://img.shields.io/bundlephobia/min/submarin-converter?style=flat-square"
+    alt="npm bundle size"
+  >
+</a>
 
 ## Example
 
 ```typescript
-const exampleConverter1 = ({ input, option = 1 }: PluginConvertFunctionArgs<number>) =>
-  [...Array(option - 1)].reduce<string>((prev) => `${prev} ${input}`, input)
-const exampleConverter2 = ({ input, option = "" }: PluginConvertFunctionArgs<string>) =>
-  `${input} ${option}`
+import { Converter, Plugin } from "submarin-converter"
+import type { ConvertFunction } from "submarin-converter"
 
-const source = "very"
+const upperCase: ConvertFunction = ({ input }) => input.toUpperCase()
+const x4: ConvertFunction<{ target: `${string}` }> = ({
+  input,
+  option = {
+    target: "O",
+  },
+}) => input.replace(new RegExp(option.target, "g"), Array(4).fill(option.target).join(""))
+const amazingProcessing: ConvertFunction = ({ input }) =>
+  new Promise<void>((r) => setTimeout(() => r(), 1000)).then(() => `${input.length}`)
 
 const converter = new Converter({
   plugins: {
-    example1: new Plugin({ convertFunction: [exampleOptionConverter1] }),
-    example2: new Plugin({ convertFunction: [exampleOptionConverter2] }),
+    upperCase: new Plugin({ convertFunction: [upperCase] }),
+    x4: new Plugin({ convertFunction: [x4] }),
+    amazingProcessing: new Plugin({ convertFunction: [amazingProcessing] }),
   } as const,
 })
 
-const [result] = await converter.convert(source, [
-  { id: "example1", option: 5 },
-  { id: "example2", option: "cool library." },
-])
+const input = "subway"
 
-console.log(result) // "very very very very very cool library."
+const [output, details] = await converter.convert(input, [
+  { id: "upperCase" },
+  {
+    id: "x4",
+    option: {
+      target: "A",
+    },
+  },
+  { id: "amazingProcessing" },
+] as const)
+
+console.log(output) // "9"
+console.log(details)
+/*
+[
+  {
+    id: "upperCase",
+    ok: true,
+    output: "SUBWAY",
+    args: {
+      input: "subway",
+    },
+    error: [],
+  },
+  {
+    id: "x4",
+    ok: true,
+    output: "SUBWAAAAY",
+    args: {
+      input: "SUBWAY",
+      option: {
+        target: "A",
+      },
+    },
+    error: [],
+  },
+  {
+    id: "amazingProcessing",
+    ok: true,
+    output: "9",
+    args: {
+      input: "SUBWAAAAY",
+    },
+    error: [],
+  },
+]
+*/
 ```
 
 ## Installation
 
 ```shell
 npm install submarin-converter
-# or yarn add submarin-converter-core-v2
-# or pnpm add submarin-converter-core-v2
+# or yarn add submarin-converter
+# or pnpm add submarin-converter
 ```
 
 ## Docs

@@ -1,6 +1,6 @@
 {
   "name": "submarin-converter",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "author": "souhait",
   "license": "MIT",
   "repository": {
@@ -26,10 +26,13 @@
   "scripts": {
     "build": "tsc && vite build",
     "prepublishOnly": "npm run test && npm run build",
-    "lint": "eslint src/",
+    "lint": "npm-run-all -p lint:*",
+    "lint:eslint": "eslint src/",
+    "lint:markdownlint": "markdownlint-cli2 \"**/*.md\" \"#node_modules\"",
     "fix": "npm-run-all -p fix:*",
     "fix:eslint": "eslint --fix src/",
     "fix:prettier": "prettier --write src/",
+    "fix:markdownlint": "markdownlint-cli2-fix \"**/*.md\" \"#node_modules\"",
     "test": "vitest run",
     "test-watch": "vitest"
   },
@@ -45,6 +48,7 @@
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-jsdoc": "^46.1.0",
     "eslint-plugin-unused-imports": "^2.0.0",
+    "markdownlint-cli2": "^0.7.1",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.8.8",
     "prettier-plugin-jsdoc": "^0.4.2",

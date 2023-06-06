@@ -1,10 +1,10 @@
-import type { PluginConvertFunctionArgs, Plugin } from "./Plugin"
+import type { ConvertFunctionArgs, Plugin } from "./Plugin"
 import type { ValueOf } from "type-fest"
 
 export type Plugins<T = unknown> = Record<string, Plugin<T>>
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type ConvertOption<TPlugins extends Plugins<any>> = ValueOf<{
+export type ConvertOrder<TPlugins extends Plugins<any>> = ValueOf<{
   [Id in keyof TPlugins]: {
     id: Extract<Id, string>
     option?: TPlugins[Id] extends Plugin<infer R> ? R : never
@@ -15,9 +15,9 @@ export interface ConverterConfig<TPlugins extends Readonly<Plugins>> {
   plugins: TPlugins
 }
 
-export type ConverterResultDetail<TConvertOption extends ConvertOption<Plugins>> = {
+export type ConvertResultDetail<TConvertOption extends ConvertOrder<Plugins>> = {
   id: TConvertOption["id"]
-  args: PluginConvertFunctionArgs<TConvertOption["option"]>
+  args: ConvertFunctionArgs<TConvertOption["option"]>
   error: unknown[]
 } & (
   | {
@@ -29,13 +29,13 @@ export type ConverterResultDetail<TConvertOption extends ConvertOption<Plugins>>
     }
 )
 
-export type ConverterResultDetails<TConvertOptions extends readonly ConvertOption<Plugins>[]> = {
-  [Index in keyof TConvertOptions]: ConverterResultDetail<TConvertOptions[Index]>
+export type ConvertResultDetails<TConvertOrders extends readonly ConvertOrder<Plugins>[]> = {
+  [Index in keyof TConvertOrders]: ConvertResultDetail<TConvertOrders[Index]>
 }
 
-export type ConverterResult<TConvertOptions extends readonly ConvertOption<Plugins>[]> = [
+export type ConvertResult<TConvertOrders extends readonly ConvertOrder<Plugins>[]> = [
   string,
-  ConverterResultDetails<TConvertOptions>
+  ConvertResultDetails<TConvertOrders>
 ]
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -46,12 +46,16 @@ export class Converter<TPlugins extends Readonly<Plugins<any>>> {
     this.#plugins = config.plugins
   }
 
-  async convert<TConvertOptions extends readonly ConvertOption<TPlugins>[]>(
+  get plugins() {
+    return this.#plugins
+  }
+
+  async convert<TConvertOrders extends readonly ConvertOrder<TPlugins>[]>(
     input: string,
-    options: TConvertOptions
-  ): Promise<ConverterResult<TConvertOptions>> {
-    const results: ConverterResult<readonly ConvertOption<Plugins>[]> = await options.reduce<
-      Promise<ConverterResult<readonly ConvertOption<Plugins>[]>>
+    options: TConvertOrders
+  ): Promise<ConvertResult<TConvertOrders>> {
+    const results: ConvertResult<readonly ConvertOrder<Plugins>[]> = await options.reduce<
+      Promise<ConvertResult<readonly ConvertOrder<Plugins>[]>>
     >(async (acc, { id, option }) => {
       const [prevOutput, prevDetails] = await acc
       try {
@@ -94,6 +98,6 @@ export class Converter<TPlugins extends Readonly<Plugins<any>>> {
         ]
       }
     }, Promise.resolve([input, []]))
-    return results as ConverterResult<TConvertOptions>
+    return results as ConvertResult<TConvertOrders>
   }
 }
