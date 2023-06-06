@@ -1,11 +1,11 @@
 import type { Promisable } from "type-fest"
 
-export interface PluginConvertFunctionArgs<T = unknown> {
+export interface ConvertFunctionArgs<T = unknown> {
   input: string
   option?: T
 }
-export type PluginConvertFunction<TOption = unknown> = (
-  args: PluginConvertFunctionArgs<TOption>
+export type ConvertFunction<TOption = unknown> = (
+  args: ConvertFunctionArgs<TOption>
 ) => Promisable<string>
 
 export interface PluginMetaData {
@@ -14,7 +14,7 @@ export interface PluginMetaData {
 }
 
 export interface PluginConfig<TOption = unknown> {
-  convertFunction: PluginConvertFunction<TOption>[]
+  convertFunction: ConvertFunction<TOption>[]
   metaData?: PluginMetaData
 }
 
@@ -32,7 +32,7 @@ export type PluginConvertResult = {
 )
 
 export class Plugin<TOption = unknown> {
-  #convertFunction: PluginConvertFunction<TOption>[]
+  #convertFunction: ConvertFunction<TOption>[]
 
   #metaData: PluginMetaData
 
@@ -45,7 +45,7 @@ export class Plugin<TOption = unknown> {
     return this.#metaData
   }
 
-  async convert(args: PluginConvertFunctionArgs<TOption>) {
+  async convert(args: ConvertFunctionArgs<TOption>) {
     return this.#convertFunction.reduce<Promise<PluginConvertResult>>(
       async (acc, func) => {
         const awaitedAcc = await acc

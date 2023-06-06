@@ -3,14 +3,14 @@ import { describe, expect, it } from "vitest"
 import {
   Converter,
   Plugin,
-  PluginConvertFunction,
-  ConverterResultDetails,
+  ConvertFunction,
+  ConvertResultDetails,
   Plugins,
-  ConvertOption,
+  ConvertOrder,
 } from "../src"
 
-const upperCase: PluginConvertFunction = ({ input }) => input.toUpperCase()
-const x4: PluginConvertFunction<{
+const upperCase: ConvertFunction = ({ input }) => input.toUpperCase()
+const x4: ConvertFunction<{
   target: `${string}`
 }> = ({
   input,
@@ -18,7 +18,7 @@ const x4: PluginConvertFunction<{
     target: "O",
   },
 }) => input.replace(new RegExp(option.target, "g"), Array(4).fill(option.target).join(""))
-const amazingProcessing: PluginConvertFunction = ({ input }) =>
+const amazingProcessing: ConvertFunction = ({ input }) =>
   new Promise<void>((r) => setTimeout(() => r(), 1000)).then(() => `${input.length}`)
 
 const dummyError = new Error("dummy error")
@@ -49,8 +49,8 @@ describe("Converter", () => {
         },
       },
       { id: "amg" },
-    ] as const satisfies readonly ConvertOption<typeof plugins>[]
-    const expectedDetails: ConverterResultDetails<typeof options> = [
+    ] as const satisfies readonly ConvertOrder<typeof plugins>[]
+    const expectedDetails: ConvertResultDetails<typeof options> = [
       {
         id: "upc",
         ok: true,
@@ -111,8 +111,8 @@ describe("Converter", () => {
         },
       },
       { id: "amg" },
-    ] as const satisfies readonly ConvertOption<typeof plugins>[]
-    const expectedDetails: ConverterResultDetails<typeof options> = [
+    ] as const satisfies readonly ConvertOrder<typeof plugins>[]
+    const expectedDetails: ConvertResultDetails<typeof options> = [
       {
         id: "upc",
         ok: true,
