@@ -39,12 +39,12 @@ const converter = new Converter({
     upperCase: new Plugin({ convertFunction: [upperCase] }),
     x4: new Plugin({ convertFunction: [x4] }),
     amazingProcessing: new Plugin({ convertFunction: [amazingProcessing] }),
-  },
+  } as const,
 })
 
 const input = "subway"
 
-const [result, details] = await converter.convert(input, [
+const [output, details] = await converter.convert(input, [
   { id: "upperCase" },
   {
     id: "x4",
@@ -53,9 +53,9 @@ const [result, details] = await converter.convert(input, [
     },
   },
   { id: "amazingProcessing" },
-])
+] as const)
 
-console.log(result) // "9"
+console.log(output) // "9"
 console.log(details)
 /*
 [
