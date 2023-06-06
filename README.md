@@ -101,9 +101,9 @@ npm install submarin-converter
 # or pnpm add submarin-converter
 ```
 
-## Docs
+## [Docs](/docs/index.md)
 
-あとでなんとかします
+- [基本的な使い方](/docs/basic_usage.md)
 
 ## Development
 

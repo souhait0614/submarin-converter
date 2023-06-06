@@ -11,6 +11,7 @@ export type ConvertFunction<TOption = unknown> = (
 export interface PluginMetaData {
   name?: string
   description?: string
+  author?: string
 }
 
 export interface PluginConfig<TOption = unknown> {
