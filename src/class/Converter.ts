@@ -46,6 +46,10 @@ export class Converter<TPlugins extends Readonly<Plugins<any>>> {
     this.#plugins = config.plugins
   }
 
+  get plugins() {
+    return this.#plugins
+  }
+
   async convert<TConvertOrders extends readonly ConvertOrder<TPlugins>[]>(
     input: string,
     options: TConvertOrders
