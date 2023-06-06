@@ -37,6 +37,8 @@ describe("Converter", () => {
       plugins,
     })
 
+    expect(converter.plugins).toEqual(plugins)
+
     const input = "subway"
     const expectedOutput = "9"
 
@@ -98,6 +100,8 @@ describe("Converter", () => {
     const converter = new Converter({
       plugins,
     })
+
+    expect(converter.plugins).toEqual(plugins)
 
     const input = "subway"
     const expectedOutput = "6"
