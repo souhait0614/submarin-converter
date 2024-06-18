@@ -1,6 +1,0 @@
-{
-  "config": {
-    "no-inline-html": false
-  },
-  "ignores": [".git", "node_modules"]
-}
