@@ -22,7 +22,7 @@ export class Converter<
     options: {
       pluginOptions?: {
         [P in TPluginNames]?: TPlugins[P] extends Plugin<object>
-          ? TPlugins[P]["defaultOption"]
+          ? Partial<TPlugins[P]["defaultOption"]>
           : undefined;
       };
       extendConvertFunctions?: {
