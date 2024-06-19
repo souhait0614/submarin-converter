@@ -1,0 +1,9 @@
+{
+  "name": "@submarin-converter/core",
+  "version": "0.0.0",
+  "exports": "./src/index.ts",
+  "imports": {
+    "@std/collections": "jsr:@std/collections@^0.224.2",
+    "type-fest": "npm:type-fest@^4.20.1"
+  }
+}
