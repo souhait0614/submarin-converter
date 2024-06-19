@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "exports": "./src/index.ts",
   "imports": {
+    "@std/assert": "jsr:@std/assert@^0.226.0",
     "@std/collections": "jsr:@std/collections@^0.224.2",
     "type-fest": "npm:type-fest@^4.20.1"
   }
