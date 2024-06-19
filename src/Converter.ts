@@ -1,12 +1,32 @@
 import { deepMerge } from "@std/collections";
 import type {
   ConverterConvertResult,
+  ConverterConvertResultDetail,
+  ConverterConvertUsingPlugin,
   ConverterOption,
   ConvertFunction,
   Plugin,
 } from "./types.ts";
 import { defaultConverterOption } from "./constants.ts";
 
+const makeFailedToConvertFunctionError = (
+  name: string,
+  index: number,
+  error: unknown,
+) =>
+  new Error(
+    `Failed to convert function.\nPlugin: "${name}"\nConvertFunctionIndex: ${index}`,
+    { cause: error },
+  );
+
+const makeFailedToAllConvertFunctionError = (
+  name: string,
+  errors: unknown[],
+) =>
+  new Error(
+    `Failed to convert function.\nPlugin: "${name}"\n`,
+    { cause: errors },
+  );
 export class Converter<
   TPlugins extends Record<
     string,
@@ -65,32 +85,49 @@ export class Converter<
     };
   }
 
-  async convert(
+  async convert<
+    TUsingPlugins extends ConverterConvertUsingPlugin<TPlugins>[],
+  >(
     text: string,
-    usingPlugins: Array<
-      | TPluginNames
-      | {
-        [P in TPluginNames]: {
-          name: P;
-          option?: TPlugins[P]["defaultOption"];
-        };
-      }[TPluginNames]
-    >,
-  ): Promise<ConverterConvertResult> {
+    usingPlugins: TUsingPlugins,
+  ): Promise<
+    ConverterConvertResult<TPlugins, TUsingPlugins>
+  > {
     let convertedText = text;
+    const details: Array<
+      ConverterConvertResultDetail<
+        TPlugins,
+        TPluginNames
+      >
+    > = [];
     for await (const usingPlugin of usingPlugins) {
       const { name, option } = typeof usingPlugin === "string"
         ? { name: usingPlugin, option: undefined }
         : usingPlugin;
       const plugin: TPlugins[typeof name] | undefined = this.plugins[name];
       if (!plugin) {
-        if (this.converterOption.continueWithPluginError) {
-          break;
+        if (this.converterOption.interruptWithPluginError) {
+          throw new Error(`Plugin "${name}" is not found.`);
         }
-        throw new Error(`Plugin "${name}" is not found.`);
+        break;
       }
       // TODO: もっと簡潔にする
       if (plugin.defaultOption) {
+        const mergedOption = deepMerge(
+          plugin.defaultOption,
+          option ?? {},
+        );
+        const detail = {
+          ok: false,
+          order: {
+            name,
+            option: mergedOption,
+          },
+          convertedText,
+        } as ConverterConvertResultDetail<
+          TPlugins,
+          TPluginNames
+        >;
         for await (
           const [indexString, convertFunction] of Object.entries(
             plugin.convertFunctions,
@@ -100,19 +137,33 @@ export class Converter<
           try {
             convertedText = await convertFunction(
               convertedText,
-              deepMerge(plugin.defaultOption, option ?? {}),
+              mergedOption,
             );
+            detail.ok = true;
+            detail.convertedText = convertedText;
+            details.push(detail);
             break;
           } catch (error) {
-            console.error(
-              new Error(
-                `Failed to convert function. \nPlugin: "${name}"\nConvertFunctionIndex: ${index}`,
-                { cause: error },
-              ),
-            );
+            console.error(makeFailedToConvertFunctionError(name, index, error));
+            detail.errors ??= [];
+            detail.errors.push(error);
           }
+          details.push(detail);
+        }
+        if (this.converterOption.interruptWithPluginError) {
+          throw makeFailedToAllConvertFunctionError(name, detail.errors!);
         }
       } else {
+        const detail = {
+          ok: false,
+          order: {
+            name,
+          },
+          convertedText,
+        } as ConverterConvertResultDetail<
+          TPlugins,
+          TPluginNames
+        >;
         for await (
           const [indexString, convertFunction] of Object.entries(
             plugin.convertFunctions,
@@ -123,20 +174,28 @@ export class Converter<
             convertedText = await convertFunction(
               convertedText,
             );
+            detail.ok = true;
+            detail.convertedText = convertedText;
+            details.push(detail);
             break;
           } catch (error) {
-            console.error(
-              new Error(
-                `Failed to convert function. \nPlugin: "${name}"\nConvertFunctionIndex: ${index}`,
-                { cause: error },
-              ),
-            );
+            console.error(makeFailedToConvertFunctionError(name, index, error));
+            detail.errors ??= [];
+            detail.errors.push(error);
           }
+          details.push(detail);
+        }
+        if (this.converterOption.interruptWithPluginError) {
+          throw makeFailedToAllConvertFunctionError(name, detail.errors!);
         }
       }
     }
     return {
       text: convertedText,
+      details: details as ConverterConvertResult<
+        TPlugins,
+        TUsingPlugins
+      >["details"],
     };
   }
 }
