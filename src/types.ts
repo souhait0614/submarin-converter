@@ -7,6 +7,16 @@ export type PluginConvertFunction<
   ? (text: string, option: Partial<TOption>) => PromiseOrValue<string>
   : (text: string) => PromiseOrValue<string>;
 
+/** Pluginに設定できる情報 */
+export interface PluginMetaData {
+  displayName?: string;
+  description?: string;
+  homepage?: string;
+  author?: string;
+  version?: string;
+  repository?: string;
+}
+
 /**
  * 文字列を加工して返却する関数やオプションの型
  *
@@ -26,7 +36,10 @@ export type PluginConvertFunction<
 export type Plugin<
   TOption extends object | undefined,
 > =
-  & { convertFunctions: PluginConvertFunction<TOption>[] }
+  & {
+    convertFunctions: PluginConvertFunction<TOption>[];
+    metaData?: PluginMetaData;
+  }
   & (TOption extends object ? {
       defaultOption: Required<TOption>;
     }

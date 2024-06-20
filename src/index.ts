@@ -41,4 +41,5 @@ export type {
   ConverterOption,
   Plugin,
   PluginConvertFunction,
+  PluginMetaData,
 } from "./types.ts";
