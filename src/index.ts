@@ -5,7 +5,7 @@
  *
  * @example
  * ```typescript
- * import { Converter, type Plugin } from "@submarin-converter/core"
+ * import { Converter, type Plugin } from "@submarin-converter/core";
  * const double: Plugin<undefined> = {
  *   convertFunctions: [(text) => text + text],
  * };
@@ -30,6 +30,28 @@
  * );
  *
  * console.log(text) // "FooFooBar"
+ * ```
+ *
+ * @example
+ * ```typescript
+ * import { Converter, type Plugin } from "@submarin-converter/core";
+ * import cjp from "@submarin-converter/plugin-cjp";
+ * import genhera from "@submarin-converter/plugin-genhera";
+ *
+ * const converter = new Converter({
+ *   cjp,
+ *   genhera,
+ * });
+ *
+ * const { text } = await converter.convert(
+ *   "こんにちは。",
+ *   [
+ *     "cjp",
+ *     "genhera",
+ *   ] as const,
+ * );
+ *
+ * console.log(text) // "ごんにさゎ。。。"
  * ```
  */
 
