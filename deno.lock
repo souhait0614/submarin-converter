@@ -5,8 +5,7 @@
       "jsr:@std/assert": "jsr:@std/assert@0.226.0",
       "jsr:@std/assert@^0.226.0": "jsr:@std/assert@0.226.0",
       "jsr:@std/collections@^0.224.2": "jsr:@std/collections@0.224.2",
-      "jsr:@std/internal@^1.0.0": "jsr:@std/internal@1.0.0",
-      "npm:type-fest@^4.20.1": "npm:type-fest@4.20.1"
+      "jsr:@std/internal@^1.0.0": "jsr:@std/internal@1.0.0"
     },
     "jsr": {
       "@std/assert@0.226.0": {
@@ -21,20 +20,13 @@
       "@std/internal@1.0.0": {
         "integrity": "ac6a6dfebf838582c4b4f61a6907374e27e05bedb6ce276e0f1608fe84e7cd9a"
       }
-    },
-    "npm": {
-      "type-fest@4.20.1": {
-        "integrity": "sha512-R6wDsVsoS9xYOpy8vgeBlqpdOyzJ12HNfQhC/aAKWM3YoCV9TtunJzh/QpkMgeDhkoynDcw5f1y+qF9yc/HHyg==",
-        "dependencies": {}
-      }
     }
   },
   "remote": {},
   "workspace": {
     "dependencies": [
       "jsr:@std/assert@^0.226.0",
-      "jsr:@std/collections@^0.224.2",
-      "npm:type-fest@^4.20.1"
+      "jsr:@std/collections@^0.224.2"
     ]
   }
 }
