@@ -34,4 +34,11 @@
  */
 
 export * from "./Converter.ts";
-export type * from "./types.ts";
+export type {
+  ConverterConvertOrder,
+  ConverterConvertResult,
+  ConverterConvertResultDetail,
+  ConverterOption,
+  Plugin,
+  PluginConvertFunction,
+} from "./types.ts";

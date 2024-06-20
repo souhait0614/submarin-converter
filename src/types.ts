@@ -1,5 +1,6 @@
 import type { Promisable } from "type-fest";
 
+/** Pluginの文字列変換関数 */
 export type PluginConvertFunction<
   TOption extends object | undefined,
 > = TOption extends object
@@ -33,6 +34,7 @@ export type Plugin<
     convertFunctions: PluginConvertFunction<undefined>[];
   };
 
+/** Converter本体のオプション */
 export interface ConverterOption {
   interruptWithPluginError?: boolean;
   // TODO: エラー出力の制御オプションの追加
@@ -56,6 +58,7 @@ export type ConverterConvertUsingPlugin<
     };
   }[TPluginIDs];
 
+/** Converter.convertで指定したPluginとPluginが使用したオプションの値 */
 export type ConverterConvertOrder<
   TPlugins extends Record<
     string,
@@ -84,6 +87,7 @@ export type ConverterConvertOrderName<
   : TUsingPlugin extends Extract<keyof TPlugins, string> ? TUsingPlugin
   : never;
 
+/** Converter.convertで指定したPluginごとの変換結果 */
 export type ConverterConvertResultDetail<
   TPlugins extends Record<
     string,
@@ -100,6 +104,7 @@ export type ConverterConvertResultDetail<
   convertedText: string;
 };
 
+/** Converter.convertの返り値 */
 export interface ConverterConvertResult<
   TPlugins extends Record<
     string,
