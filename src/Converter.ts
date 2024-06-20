@@ -4,8 +4,8 @@ import type {
   ConverterConvertResultDetail,
   ConverterConvertUsingPlugin,
   ConverterOption,
-  ConvertFunction,
   Plugin,
+  PluginConvertFunction,
 } from "./types.ts";
 import { defaultConverterOption } from "./constants.ts";
 
@@ -104,7 +104,7 @@ export class Converter<
         } else {
           tempPlugins[name as TPluginIDs] = {
             convertFunctions: (extendConvertFunction?.(convertFunctions) ??
-              convertFunctions) as ConvertFunction[],
+              convertFunctions) as PluginConvertFunction<undefined>[],
           };
         }
       },

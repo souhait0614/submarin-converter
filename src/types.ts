@@ -1,9 +1,10 @@
 import type { Promisable } from "type-fest";
 
-export type ConvertFunction = (text: string) => Promisable<string>;
-export type ConvertFunctionWithOption<
-  TOption extends object,
-> = (text: string, option: Partial<TOption>) => Promisable<string>;
+export type PluginConvertFunction<
+  TOption extends object | undefined,
+> = TOption extends object
+  ? (text: string, option: TOption) => Promisable<string>
+  : (text: string) => Promisable<string>;
 
 /**
  * 文字列を加工して返却する関数やオプションの型
@@ -25,11 +26,11 @@ export type Plugin<
   TOption extends object | undefined,
 > = TOption extends object ? {
     defaultOption: Required<TOption>;
-    convertFunctions: ConvertFunctionWithOption<TOption>[];
+    convertFunctions: PluginConvertFunction<TOption>[];
   }
   : {
     defaultOption?: never;
-    convertFunctions: ConvertFunction[];
+    convertFunctions: PluginConvertFunction<undefined>[];
   };
 
 export interface ConverterOption {
