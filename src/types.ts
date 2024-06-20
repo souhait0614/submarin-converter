@@ -26,34 +26,34 @@ export type ConverterConvertUsingPlugin<
     string,
     Plugin<object | undefined>
   >,
-  TPluginNames extends Extract<keyof TPlugins, string> = Extract<
+  TPluginIDs extends Extract<keyof TPlugins, string> = Extract<
     keyof TPlugins,
     string
   >,
 > =
-  | TPluginNames
+  | TPluginIDs
   | {
-    [P in TPluginNames]: {
+    [P in TPluginIDs]: {
       name: P;
       option?: TPlugins[P]["defaultOption"];
     };
-  }[TPluginNames];
+  }[TPluginIDs];
 
 export type ConverterConvertOrder<
   TPlugins extends Record<
     string,
     Plugin<object | undefined>
   >,
-  TPluginNames extends Extract<keyof TPlugins, string> = Extract<
+  TPluginIDs extends Extract<keyof TPlugins, string> = Extract<
     keyof TPlugins,
     string
   >,
-> = TPlugins[TPluginNames]["defaultOption"] extends object ? {
-    name: TPluginNames;
-    option: TPlugins[TPluginNames]["defaultOption"];
+> = TPlugins[TPluginIDs]["defaultOption"] extends object ? {
+    name: TPluginIDs;
+    option: TPlugins[TPluginIDs]["defaultOption"];
   }
   : {
-    name: TPluginNames;
+    name: TPluginIDs;
   };
 
 export type ConverterConvertOrderName<
@@ -72,12 +72,12 @@ export type ConverterConvertResultDetail<
     string,
     Plugin<object | undefined>
   >,
-  TPluginNames extends Extract<keyof TPlugins, string> = Extract<
+  TPluginIDs extends Extract<keyof TPlugins, string> = Extract<
     keyof TPlugins,
     string
   >,
 > = {
-  order: ConverterConvertOrder<TPlugins, TPluginNames>;
+  order: ConverterConvertOrder<TPlugins, TPluginIDs>;
   ok: boolean;
   errors?: unknown[];
   convertedText: string;

@@ -32,7 +32,7 @@ export class Converter<
     string,
     Plugin<object | undefined>
   >,
-  TPluginNames extends Extract<keyof TPlugins, string>,
+  TPluginIDs extends Extract<keyof TPlugins, string>,
 > {
   plugins: TPlugins;
   converterOption: Required<ConverterOption>;
@@ -41,12 +41,12 @@ export class Converter<
     plugins: TPlugins,
     options: {
       pluginOptions?: {
-        [P in TPluginNames]?: TPlugins[P] extends Plugin<object>
+        [P in TPluginIDs]?: TPlugins[P] extends Plugin<object>
           ? Partial<TPlugins[P]["defaultOption"]>
           : undefined;
       };
       extendConvertFunctions?: {
-        [P in TPluginNames]?: (
+        [P in TPluginIDs]?: (
           convertFunctions: TPlugins[P]["convertFunctions"],
         ) => TPlugins[P]["convertFunctions"];
       };
@@ -54,16 +54,16 @@ export class Converter<
     } = {},
   ) {
     const tempPlugins: Partial<
-      Record<TPluginNames, Plugin<object | undefined>>
+      Record<TPluginIDs, Plugin<object | undefined>>
     > = {};
     Object.entries(plugins).forEach(
       ([name, { defaultOption, convertFunctions }]) => {
-        const pluginOption = options.pluginOptions?.[name as TPluginNames];
+        const pluginOption = options.pluginOptions?.[name as TPluginIDs];
         const extendConvertFunction = options.extendConvertFunctions?.[
-          name as TPluginNames
+          name as TPluginIDs
         ];
         if (defaultOption) {
-          tempPlugins[name as TPluginNames] = {
+          tempPlugins[name as TPluginIDs] = {
             defaultOption: pluginOption
               ? deepMerge(defaultOption, pluginOption)
               : defaultOption,
@@ -71,7 +71,7 @@ export class Converter<
               convertFunctions,
           };
         } else {
-          tempPlugins[name as TPluginNames] = {
+          tempPlugins[name as TPluginIDs] = {
             convertFunctions: (extendConvertFunction?.(convertFunctions) ??
               convertFunctions) as ConvertFunction[],
           };
@@ -97,7 +97,7 @@ export class Converter<
     const details: Array<
       ConverterConvertResultDetail<
         TPlugins,
-        TPluginNames
+        TPluginIDs
       >
     > = [];
     for await (const usingPlugin of usingPlugins) {
@@ -126,7 +126,7 @@ export class Converter<
           convertedText,
         } as ConverterConvertResultDetail<
           TPlugins,
-          TPluginNames
+          TPluginIDs
         >;
         for await (
           const [indexString, convertFunction] of Object.entries(
@@ -162,7 +162,7 @@ export class Converter<
           convertedText,
         } as ConverterConvertResultDetail<
           TPlugins,
-          TPluginNames
+          TPluginIDs
         >;
         for await (
           const [indexString, convertFunction] of Object.entries(
