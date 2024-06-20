@@ -1,3 +1,38 @@
+/**
+ * @module
+ *
+ * 文字列を加工して返却する関数をプラグインとして設定し、指定した順序、オプションに従って文字列を変換します
+ *
+ * @example
+ * ```typescript
+ * import { Converter, type Plugin } from "@submarin-converter/core"
+ * const double: Plugin<undefined> = {
+ *   convertFunctions: [(text) => text + text],
+ * };
+ * const suffix: Plugin<{ suffix: string }> = {
+ *   defaultOption: { suffix: "" },
+ *   convertFunctions: [(text, option) => text + option.suffix],
+ * };
+ * const converter = new Converter({
+ *   double,
+ *   suffix,
+ * });
+ *
+ * const { text } = await converter.convert(
+ *   "Foo",
+ *   [
+ *     "double",
+ *     {
+ *       name: "suffix",
+ *       option: { suffix: "Bar" },
+ *     },
+ *   ] as const,
+ * );
+ *
+ * console.log(text) // "FooFooBar"
+ * ```
+ */
+
 import { deepMerge } from "@std/collections";
 import type {
   ConverterConvertResult,
@@ -27,6 +62,28 @@ const makeFailedToAllConvertFunctionError = (
     `Failed to convert function.\nPlugin: "${name}"\n`,
     { cause: errors },
   );
+
+/**
+ * 指定されたプラグインを使用して変換を処理するConverterクラス
+ *
+ * @template {Record<string, Plugin<object | undefined>>} TPlugins
+ * @template {Extract<keyof TPlugins, string>} TPluginIDs
+ *
+ * @example
+ * ```typescript
+ * const double: Plugin<undefined> = {
+ *   convertFunctions: [(text) => text + text],
+ * };
+ * const suffix: Plugin<{ suffix: string }> = {
+ *   defaultOption: { suffix: "" },
+ *   convertFunctions: [(text, option) => text + option.suffix],
+ * };
+ * const converter = new Converter({
+ *   double,
+ *   suffix,
+ * });
+ * ```
+ */
 export class Converter<
   TPlugins extends Record<
     string,
@@ -37,6 +94,15 @@ export class Converter<
   plugins: TPlugins;
   converterOption: Required<ConverterOption>;
 
+  /**
+   * Converterインスタンスを構築します
+   *
+   * @param {TPlugins} plugins - コンバータで使用するプラグイン
+   * @param {Object} [options] - コンバータのオプション設定
+   * @param {Object} [options.pluginOptions] - 各プラグインのオプション
+   * @param {Object} [options.extendConvertFunctions] - 各プラグインの変換関数を拡張するための関数
+   * @param {ConverterOption} [options.converterOption] - 一般的なコンバータオプション
+   */
   constructor(
     plugins: TPlugins,
     options: {
@@ -85,6 +151,15 @@ export class Converter<
     };
   }
 
+  /**
+   * 指定されたプラグインを使用してテキストを変換します
+   *
+   * @template TUsingPlugins - 変換に使用するプラグインのタプル
+   * @param {string} text - 変換するテキスト
+   * @param {TUsingPlugins} usingPlugins - 変換に使用するプラグイン
+   * @returns {Promise<ConverterConvertResult<TPlugins, TUsingPlugins>>} - 変換の結果
+   * @throws {Error} - プラグインが見つからない場合や変換に失敗した場合にエラーをスローします
+   */
   async convert<
     TUsingPlugins extends ConverterConvertUsingPlugin<TPlugins>[],
   >(

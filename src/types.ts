@@ -5,6 +5,22 @@ export type ConvertFunctionWithOption<
   TOption extends object,
 > = (text: string, option: Partial<TOption>) => Promisable<string>;
 
+/**
+ * 文字列を加工して返却する関数やオプションの型
+ *
+ * @example
+ * ```ts
+ * const double: Plugin<undefined> = {
+ *  convertFunctions: [(text) => text + text],
+ * };
+ * const suffix: Plugin<{ suffix: string }> = {
+ *  defaultOption: { suffix: "" },
+ *  convertFunctions: [(text, option) => text + option.suffix],
+ * };
+ * ```
+ *
+ * @template {object | undefined} TOption
+ */
 export type Plugin<
   TOption extends object | undefined,
 > = TOption extends object ? {
