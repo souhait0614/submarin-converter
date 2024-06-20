@@ -1,9 +1,11 @@
 import type { Promisable } from "type-fest";
 
-export type ConvertFunction = (text: string) => Promisable<string>;
-export type ConvertFunctionWithOption<
-  TOption extends object,
-> = (text: string, option: Partial<TOption>) => Promisable<string>;
+/** Pluginの文字列変換関数 */
+export type PluginConvertFunction<
+  TOption extends object | undefined,
+> = TOption extends object
+  ? (text: string, option: TOption) => Promisable<string>
+  : (text: string) => Promisable<string>;
 
 /**
  * 文字列を加工して返却する関数やオプションの型
@@ -25,13 +27,14 @@ export type Plugin<
   TOption extends object | undefined,
 > = TOption extends object ? {
     defaultOption: Required<TOption>;
-    convertFunctions: ConvertFunctionWithOption<TOption>[];
+    convertFunctions: PluginConvertFunction<TOption>[];
   }
   : {
     defaultOption?: never;
-    convertFunctions: ConvertFunction[];
+    convertFunctions: PluginConvertFunction<undefined>[];
   };
 
+/** Converter本体のオプション */
 export interface ConverterOption {
   interruptWithPluginError?: boolean;
   // TODO: エラー出力の制御オプションの追加
@@ -55,6 +58,7 @@ export type ConverterConvertUsingPlugin<
     };
   }[TPluginIDs];
 
+/** Converter.convertで指定したPluginとPluginが使用したオプションの値 */
 export type ConverterConvertOrder<
   TPlugins extends Record<
     string,
@@ -83,6 +87,7 @@ export type ConverterConvertOrderName<
   : TUsingPlugin extends Extract<keyof TPlugins, string> ? TUsingPlugin
   : never;
 
+/** Converter.convertで指定したPluginごとの変換結果 */
 export type ConverterConvertResultDetail<
   TPlugins extends Record<
     string,
@@ -99,6 +104,7 @@ export type ConverterConvertResultDetail<
   convertedText: string;
 };
 
+/** Converter.convertの返り値 */
 export interface ConverterConvertResult<
   TPlugins extends Record<
     string,
