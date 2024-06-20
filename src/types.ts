@@ -18,6 +18,7 @@ export type Plugin<
 
 export interface ConverterOption {
   interruptWithPluginError?: boolean;
+  // TODO: エラー出力の制御オプションの追加
 }
 
 export type ConverterConvertUsingPlugin<
