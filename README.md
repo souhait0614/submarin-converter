@@ -2,15 +2,8 @@
 
 いい感じの型が付いた TypeScript 製文字変換ライブラリ
 
-<a href="/LICENSE" target="_blank" style="display:inline-block">
-  <img
-    src="https://img.shields.io/github/license/souhait0614/submarin-converter?style=flat-square"
-    alt="license"
-  >
-</a>
-<a href="https://jsr.io/@submarin-converter/core" target="_blank" style="display:inline-block">
-  <img src="https://img.shields.io/jsr/v/@submarin-converter/core?style=flat-square" alt="jsr">
-</a>
+[![GitHub License](https://img.shields.io/github/license/souhait0614/submarin-converter?style=flat-square)](/LICENSE)
+[![JSR Version](https://img.shields.io/jsr/v/%40submarin-converter/core?style=flat-square)](https://jsr.io/@submarin-converter/core)
 
 ## Installation/Example/Docs
 
@@ -21,6 +14,5 @@ see <https://jsr.io/@submarin-converter/core>
 ```shell
 git clone https://github.com/souhait0614/submarin-converter.git
 cd submarin-converter
-pnpm i
-pnpm test
+deno test
 ```
