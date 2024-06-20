@@ -1,2 +1,2 @@
-export * from "./class/Converter"
-export * from "./class/Plugin"
+export * from "./Converter.ts";
+export type * from "./types.ts";
