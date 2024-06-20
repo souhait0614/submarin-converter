@@ -1,11 +1,11 @@
-import type { Promisable } from "type-fest";
+export type PromiseOrValue<T> = T | PromiseLike<T>;
 
 /** Pluginの文字列変換関数 */
 export type PluginConvertFunction<
   TOption extends object | undefined,
 > = TOption extends object
-  ? (text: string, option: TOption) => Promisable<string>
-  : (text: string) => Promisable<string>;
+  ? (text: string, option: Partial<TOption>) => PromiseOrValue<string>
+  : (text: string) => PromiseOrValue<string>;
 
 /**
  * 文字列を加工して返却する関数やオプションの型
@@ -25,14 +25,14 @@ export type PluginConvertFunction<
  */
 export type Plugin<
   TOption extends object | undefined,
-> = TOption extends object ? {
-    defaultOption: Required<TOption>;
-    convertFunctions: PluginConvertFunction<TOption>[];
-  }
-  : {
-    defaultOption?: never;
-    convertFunctions: PluginConvertFunction<undefined>[];
-  };
+> =
+  & { convertFunctions: PluginConvertFunction<TOption>[] }
+  & (TOption extends object ? {
+      defaultOption: Required<TOption>;
+    }
+    : {
+      defaultOption?: never;
+    });
 
 /** Converter本体のオプション */
 export interface ConverterOption {

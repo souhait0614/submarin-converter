@@ -151,83 +151,47 @@ export class Converter<
         }
         break;
       }
-      // TODO: もっと簡潔にする
-      if (plugin.defaultOption) {
-        const mergedOption = deepMerge(
+      const mergedOption = plugin.defaultOption
+        ? deepMerge(
           plugin.defaultOption,
           option ?? {},
-        );
-        const detail = {
-          ok: false,
-          order: {
-            name,
-            option: mergedOption,
-          },
-          convertedText,
-        } as ConverterConvertResultDetail<
-          TPlugins,
-          TPluginIDs
-        >;
-        for await (
-          const [indexString, convertFunction] of Object.entries(
-            plugin.convertFunctions,
-          )
-        ) {
-          const index = Number(indexString);
-          try {
-            convertedText = await convertFunction(
-              convertedText,
-              mergedOption,
-            );
-            detail.ok = true;
-            detail.convertedText = convertedText;
-            details.push(detail);
-            break;
-          } catch (error) {
-            console.error(makeFailedToConvertFunctionError(name, index, error));
-            detail.errors ??= [];
-            detail.errors.push(error);
-          }
+        )
+        : {};
+      const detail = {
+        ok: false,
+        order: {
+          name,
+          option: plugin.defaultOption ? mergedOption : undefined,
+        },
+        convertedText,
+      } as ConverterConvertResultDetail<
+        TPlugins,
+        TPluginIDs
+      >;
+      for await (
+        const [indexString, convertFunction] of Object.entries(
+          plugin.convertFunctions,
+        )
+      ) {
+        const index = Number(indexString);
+        try {
+          convertedText = await convertFunction(
+            convertedText,
+            mergedOption,
+          );
+          detail.ok = true;
+          detail.convertedText = convertedText;
           details.push(detail);
+          break;
+        } catch (error) {
+          console.error(makeFailedToConvertFunctionError(name, index, error));
+          detail.errors ??= [];
+          detail.errors.push(error);
         }
-        if (this.converterOption.interruptWithPluginError) {
-          throw makeFailedToAllConvertFunctionError(name, detail.errors!);
-        }
-      } else {
-        const detail = {
-          ok: false,
-          order: {
-            name,
-          },
-          convertedText,
-        } as ConverterConvertResultDetail<
-          TPlugins,
-          TPluginIDs
-        >;
-        for await (
-          const [indexString, convertFunction] of Object.entries(
-            plugin.convertFunctions,
-          )
-        ) {
-          const index = Number(indexString);
-          try {
-            convertedText = await convertFunction(
-              convertedText,
-            );
-            detail.ok = true;
-            detail.convertedText = convertedText;
-            details.push(detail);
-            break;
-          } catch (error) {
-            console.error(makeFailedToConvertFunctionError(name, index, error));
-            detail.errors ??= [];
-            detail.errors.push(error);
-          }
-          details.push(detail);
-        }
-        if (this.converterOption.interruptWithPluginError) {
-          throw makeFailedToAllConvertFunctionError(name, detail.errors!);
-        }
+        details.push(detail);
+      }
+      if (this.converterOption.interruptWithPluginError) {
+        throw makeFailedToAllConvertFunctionError(name, detail.errors!);
       }
     }
     return {
