@@ -4,7 +4,9 @@
   "exports": "./src/index.ts",
   "imports": {
     "@std/assert": "jsr:@std/assert@^0.226.0",
-    "@std/collections": "jsr:@std/collections@^0.224.2"
+    "@std/collections": "jsr:@std/collections@^0.224.2",
+    "@submarin-converter/plugin-cjp": "jsr:@submarin-converter/plugin-cjp@^0.2.0",
+    "@submarin-converter/plugin-genhera": "jsr:@submarin-converter/plugin-genhera@^0.2.0"
   },
   "publish": {
     "include": [

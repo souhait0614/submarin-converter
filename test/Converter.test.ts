@@ -1,5 +1,9 @@
 import { Converter, type Plugin } from "../src/index.ts";
 import { assertEquals, assertInstanceOf } from "@std/assert";
+import cjp from "@submarin-converter/plugin-cjp";
+import genhera from "@submarin-converter/plugin-genhera";
+import cjpDynamic from "@submarin-converter/plugin-cjp/dynamic";
+import genheraDynamic from "@submarin-converter/plugin-genhera/dynamic";
 
 Deno.test("single convert", async () => {
   const double: Plugin<undefined> = {
@@ -82,6 +86,42 @@ Deno.test("async convert", async () => {
   }]);
   assertEquals(text, "Test");
   assertEquals(details[0].ok, true);
+});
+
+Deno.test("module plugin convert", async () => {
+  const converter = new Converter({
+    cjp,
+    genhera,
+  });
+  const { text, details } = await converter.convert(
+    "こんにちは。",
+    [
+      "cjp",
+      "genhera",
+    ] as const,
+  );
+
+  assertEquals(text, "ごんにさゎ。。。");
+  assertEquals(details[0].ok, true);
+  assertEquals(details[1].ok, true);
+});
+
+Deno.test("dynamic module plugin convert", async () => {
+  const converter = new Converter({
+    cjpDynamic,
+    genheraDynamic,
+  });
+  const { text, details } = await converter.convert(
+    "こんにちは。",
+    [
+      "cjpDynamic",
+      "genheraDynamic",
+    ] as const,
+  );
+
+  assertEquals(text, "ごんにさゎ。。。");
+  assertEquals(details[0].ok, true);
+  assertEquals(details[1].ok, true);
 });
 
 Deno.test("multiple plugins convert", async () => {
