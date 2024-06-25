@@ -62,11 +62,11 @@ export class Converter<
   /**
    * Converterインスタンスを構築します
    *
-   * @param {TPlugins} plugins - コンバータで使用するプラグイン
-   * @param {Object} [options] - コンバータのオプション設定
+   * @param {TPlugins} plugins - 使用するプラグイン
+   * @param {Object} [options]
    * @param {Object} [options.pluginOptions] - 各プラグインのオプション
    * @param {Object} [options.extendConvertFunctions] - 各プラグインの変換関数を拡張するための関数
-   * @param {ConverterOption} [options.converterOption] - 一般的なコンバータオプション
+   * @param {ConverterOption} [options.converterOption] - Converter本体のオプション
    */
   constructor(
     plugins: TPlugins,
