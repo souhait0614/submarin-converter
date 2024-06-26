@@ -15,7 +15,7 @@ export class Logger {
   }
 
   private log(level: LogLevels, message: string, ...args: unknown[]) {
-    if (logLevels[level] >= this.level) {
+    if (logLevels[level] <= this.level) {
       console[level](`[SubmarinConverter] ${message}`, ...args);
     }
   }
