@@ -1,3 +1,5 @@
+import type { LogLevels } from "./logger.ts";
+
 export type PromiseOrValue<T> = T | PromiseLike<T>;
 
 /** Pluginの文字列変換関数 */
@@ -50,7 +52,7 @@ export type Plugin<
 /** Converter本体のオプション */
 export interface ConverterOption {
   interruptWithPluginError?: boolean;
-  // TODO: エラー出力の制御オプションの追加
+  logLevel?: LogLevels;
 }
 
 export type ConverterConvertUsingPlugin<

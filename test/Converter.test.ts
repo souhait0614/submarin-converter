@@ -11,7 +11,7 @@ Deno.test("single convert", async () => {
   };
   const converter = new Converter({
     double,
-  });
+  }, { converterOption: { logLevel: "debug" } });
   const { text, details } = await converter.convert("Test", ["double"]);
   assertEquals(text, "TestTest");
   assertEquals(details[0].ok, true);
@@ -24,7 +24,7 @@ Deno.test("option convert", async () => {
   };
   const converter = new Converter({
     suffix,
-  });
+  }, { converterOption: { logLevel: "debug" } });
   const { text, details } = await converter.convert("Test", [{
     name: "suffix",
     option: { suffix: "Foo" },
@@ -42,7 +42,7 @@ Deno.test("fallback convert function", async () => {
   };
   const converter = new Converter({
     prefix,
-  });
+  }, { converterOption: { logLevel: "debug" } });
   const { text, details } = await converter.convert("Test", [{
     name: "prefix",
     option: { prefix: "Foo" },
@@ -60,7 +60,7 @@ Deno.test("failed convert", async () => {
   };
   const converter = new Converter({
     error,
-  });
+  }, { converterOption: { logLevel: "debug" } });
   const { text, details } = await converter.convert("Test", ["error"]);
   assertEquals(text, "Test");
   assertEquals(details[0].ok, false);
@@ -79,7 +79,7 @@ Deno.test("async convert", async () => {
   };
   const converter = new Converter({
     sleep,
-  });
+  }, { converterOption: { logLevel: "debug" } });
   const { text, details } = await converter.convert("Test", [{
     name: "sleep",
     option: { time: 500 },
@@ -92,7 +92,7 @@ Deno.test("module plugin convert", async () => {
   const converter = new Converter({
     cjp,
     genhera,
-  });
+  }, { converterOption: { logLevel: "debug" } });
   const { text, details } = await converter.convert(
     "こんにちは。",
     [
@@ -110,7 +110,7 @@ Deno.test("dynamic module plugin convert", async () => {
   const converter = new Converter({
     cjpDynamic,
     genheraDynamic,
-  });
+  }, { converterOption: { logLevel: "debug" } });
   const { text, details } = await converter.convert(
     "こんにちは。",
     [
@@ -158,7 +158,7 @@ Deno.test("multiple plugins convert", async () => {
     prefix,
     error,
     sleep,
-  });
+  }, { converterOption: { logLevel: "debug" } });
   const { text, details } = await converter.convert(
     "Test",
     [
