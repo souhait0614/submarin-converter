@@ -14,6 +14,7 @@ Deno.test("single convert", async () => {
   }, { converterOption: { logLevel: "debug" } });
   const { text, details } = await converter.convert("Test", ["double"]);
   assertEquals(text, "TestTest");
+  assertEquals(details.length, 1);
   assertEquals(details[0].ok, true);
 });
 
@@ -30,6 +31,7 @@ Deno.test("option convert", async () => {
     option: { suffix: "Foo" },
   }]);
   assertEquals(text, "TestFoo");
+  assertEquals(details.length, 1);
   assertEquals(details[0].ok, true);
 });
 
@@ -48,6 +50,7 @@ Deno.test("fallback convert function", async () => {
     option: { prefix: "Foo" },
   }]);
   assertEquals(text, "FooTest");
+  assertEquals(details.length, 1);
   assertEquals(details[0].ok, true);
   assertInstanceOf(details[0].errors?.at(0), Error);
 });
@@ -63,6 +66,7 @@ Deno.test("failed convert", async () => {
   }, { converterOption: { logLevel: "debug" } });
   const { text, details } = await converter.convert("Test", ["error"]);
   assertEquals(text, "Test");
+  assertEquals(details.length, 1);
   assertEquals(details[0].ok, false);
   assertInstanceOf(details[0].errors?.at(0), Error);
 });
@@ -85,6 +89,7 @@ Deno.test("async convert", async () => {
     option: { time: 500 },
   }]);
   assertEquals(text, "Test");
+  assertEquals(details.length, 1);
   assertEquals(details[0].ok, true);
 });
 
@@ -102,6 +107,7 @@ Deno.test("module plugin convert", async () => {
   );
 
   assertEquals(text, "ごんにさゎ。。。");
+  assertEquals(details.length, 2);
   assertEquals(details[0].ok, true);
   assertEquals(details[1].ok, true);
 });
@@ -120,6 +126,7 @@ Deno.test("dynamic module plugin convert", async () => {
   );
 
   assertEquals(text, "ごんにさゎ。。。");
+  assertEquals(details.length, 2);
   assertEquals(details[0].ok, true);
   assertEquals(details[1].ok, true);
 });
@@ -183,6 +190,7 @@ Deno.test("multiple plugins convert", async () => {
     ] as const,
   );
   assertEquals(text, "BazTestFooTestFooBar");
+  assertEquals(details.length, 6);
   assertEquals(details[0].ok, true);
   assertEquals(details[1].ok, true);
   assertEquals(details[2].ok, true);
