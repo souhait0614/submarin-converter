@@ -220,7 +220,6 @@ export class Converter<
             mergedOption,
             convertedText,
           });
-          details.push(detail);
           break;
         } catch (error) {
           this.logger.error(
@@ -230,8 +229,8 @@ export class Converter<
           detail.errors ??= [];
           detail.errors.push(error);
         }
-        details.push(detail);
       }
+      details.push(detail);
       if (this.converterOption.interruptWithPluginError) {
         throw makeFailedToAllConvertFunctionError(name, detail.errors!);
       }
