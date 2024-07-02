@@ -13,8 +13,8 @@ export type PluginConvertFunction<
 export interface PluginMetaData {
   displayName?: string;
   description?: string;
-  homepage?: string;
-  author?: string;
+  homepage?: string | string[];
+  author?: string | string[];
   version?: string;
   repository?: string;
 }
