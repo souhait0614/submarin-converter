@@ -4,6 +4,10 @@ import cjp from "@submarin-converter/plugin-cjp";
 import genhera from "@submarin-converter/plugin-genhera";
 import cjpDynamic from "@submarin-converter/plugin-cjp/dynamic";
 import genheraDynamic from "@submarin-converter/plugin-genhera/dynamic";
+import type {
+  ConverterConvertResultDetail,
+  ConverterEndConvertFunctionHandler,
+} from "../src/types.ts";
 
 Deno.test("single convert", async () => {
   const double: Plugin<undefined> = {
@@ -91,6 +95,80 @@ Deno.test("async convert", async () => {
   assertEquals(text, "Test");
   assertEquals(details.length, 1);
   assertEquals(details[0].ok, true);
+});
+
+Deno.test("callback", async () => {
+  const double: Plugin<undefined> = {
+    convertFunctions: [(text) => text + text],
+  };
+  const suffix: Plugin<{ suffix: string }> = {
+    defaultOption: { suffix: "" },
+    convertFunctions: [(text, option) => text + option.suffix],
+  };
+  const prefix: Plugin<{ prefix: string }> = {
+    defaultOption: { prefix: "" },
+    convertFunctions: [() => {
+      throw new Error("Foo");
+    }, (text, { prefix }) => prefix + text],
+  };
+  const plugins = {
+    double,
+    suffix,
+    prefix,
+  };
+  const endConvertFunctionDetails: ConverterConvertResultDetail<
+    typeof plugins
+  >[] = [];
+  const endConvertFunctionIndices: [number, number][] = [];
+  const handleEndConvertFunction: ConverterEndConvertFunctionHandler<
+    typeof plugins
+  > = (detail, usingPluginsIndex, convertFunctionIndex) => {
+    endConvertFunctionDetails.push(detail);
+    endConvertFunctionIndices.push([usingPluginsIndex, convertFunctionIndex]);
+  };
+  const endPluginConvertDetails: ConverterConvertResultDetail<
+    typeof plugins
+  >[] = [];
+  const endPluginConvertIndices: number[] = [];
+  const onEndPluginConvert: (
+    detail: ConverterConvertResultDetail<typeof plugins>,
+    usingPluginsIndex: number,
+  ) => void = (detail, usingPluginsIndex) => {
+    endPluginConvertDetails.push(detail);
+    endPluginConvertIndices.push(usingPluginsIndex);
+  };
+  const converter = new Converter(plugins, {
+    converterOption: { logLevel: "debug" },
+    onEndConvertFunction: handleEndConvertFunction,
+    onEndPluginConvert,
+  });
+  const { text, details } = await converter.convert("Test", [
+    "double",
+    {
+      name: "prefix",
+      option: { prefix: "Foo" },
+    },
+    {
+      name: "suffix",
+      option: { suffix: "Bar" },
+    },
+  ]);
+  assertEquals(text, "FooTestTestBar");
+  assertEquals(details.map(({ ok }) => ok), [true, true, true]);
+  assertInstanceOf(details[1].errors?.at(0), Error);
+
+  assertEquals(endConvertFunctionDetails.map(({ ok }) => ok), [
+    true,
+    false,
+    true,
+    true,
+  ]);
+  assertEquals(endConvertFunctionIndices, [[0, 0], [1, 0], [1, 1], [2, 0]]);
+  assertInstanceOf(endConvertFunctionDetails[1].errors?.at(0), Error);
+  assertInstanceOf(endConvertFunctionDetails[2].errors?.at(0), Error);
+
+  assertEquals(endPluginConvertDetails, details);
+  assertEquals(endPluginConvertIndices, [0, 1, 2]);
 });
 
 Deno.test("module plugin convert", async () => {

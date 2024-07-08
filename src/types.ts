@@ -135,3 +135,32 @@ export interface ConverterConvertResult<
     >;
   };
 }
+
+export type ConverterEndPluginConvertHandler<
+  TPlugins extends Record<
+    string,
+    Plugin<object | undefined>
+  >,
+  TPluginIDs extends Extract<keyof TPlugins, string> = Extract<
+    keyof TPlugins,
+    string
+  >,
+> = (
+  detail: ConverterConvertResultDetail<TPlugins, TPluginIDs>,
+  usingPluginsIndex: number,
+) => void;
+
+export type ConverterEndConvertFunctionHandler<
+  TPlugins extends Record<
+    string,
+    Plugin<object | undefined>
+  >,
+  TPluginIDs extends Extract<keyof TPlugins, string> = Extract<
+    keyof TPlugins,
+    string
+  >,
+> = (
+  detail: ConverterConvertResultDetail<TPlugins, TPluginIDs>,
+  usingPluginsIndex: number,
+  convertFunctionIndex: number,
+) => void;

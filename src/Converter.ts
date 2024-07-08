@@ -3,6 +3,8 @@ import type {
   ConverterConvertResult,
   ConverterConvertResultDetail,
   ConverterConvertUsingPlugin,
+  ConverterEndConvertFunctionHandler,
+  ConverterEndPluginConvertHandler,
   ConverterOption,
   Plugin,
   PluginConvertFunction,
@@ -60,6 +62,8 @@ export class Converter<
   plugins: TPlugins;
   converterOption: Required<ConverterOption>;
   private logger: Logger;
+  private onEndConvertFunction?: ConverterEndConvertFunctionHandler<TPlugins>;
+  private onEndPluginConvert?: ConverterEndPluginConvertHandler<TPlugins>;
 
   /**
    * Converterインスタンスを構築します
@@ -69,6 +73,8 @@ export class Converter<
    * @param {Object} [options.pluginOptions] - 各プラグインのオプション
    * @param {Object} [options.extendConvertFunctions] - 各プラグインの変換関数を拡張するための関数
    * @param {ConverterOption} [options.converterOption] - Converter本体のオプション
+   * @param {ConverterEndConvertFunctionHandler<TPlugins>} [options.onEndConvertFunction] - Converter.convertでプラグインのConvertFunctionが実行されたあとに呼び出されるコールバック関数
+   * @param {ConverterEndPluginConvertHandler<TPlugins>} [options.onEndPluginConvert] - Converter.convertでプラグインでの変換が成功または失敗したあとに呼び出されるコールバック関数
    */
   constructor(
     plugins: TPlugins,
@@ -84,6 +90,8 @@ export class Converter<
         ) => TPlugins[P]["convertFunctions"];
       };
       converterOption?: ConverterOption;
+      onEndConvertFunction?: ConverterEndConvertFunctionHandler<TPlugins>;
+      onEndPluginConvert?: ConverterEndPluginConvertHandler<TPlugins>;
     } = {},
   ) {
     this.logger = new Logger(
@@ -130,6 +138,16 @@ export class Converter<
       ...options.converterOption,
     };
     this.logger.debug("ConverterOption is initialized:", this.converterOption);
+    this.onEndConvertFunction = options.onEndConvertFunction;
+    this.logger.debug(
+      "EndConvertFunction is initialized:",
+      this.onEndConvertFunction,
+    );
+    this.onEndPluginConvert = options.onEndPluginConvert;
+    this.logger.debug(
+      "EndPluginConvert is initialized:",
+      this.onEndPluginConvert,
+    );
   }
 
   /**
@@ -160,7 +178,12 @@ export class Converter<
         TPluginIDs
       >
     > = [];
-    for await (const usingPlugin of usingPlugins) {
+    for await (
+      const [usingPluginsIndexString, usingPlugin] of Object.entries(
+        usingPlugins,
+      )
+    ) {
+      const usingPluginsIndex = Number(usingPluginsIndexString);
       const { name, option } = typeof usingPlugin === "string"
         ? { name: usingPlugin, option: undefined }
         : usingPlugin;
@@ -198,17 +221,20 @@ export class Converter<
         TPluginIDs
       >;
       for await (
-        const [indexString, convertFunction] of Object.entries(
+        const [convertFunctionIndexString, convertFunction] of Object.entries(
           plugin.convertFunctions,
         )
       ) {
-        const index = Number(indexString);
+        const convertFunctionIndex = Number(convertFunctionIndexString);
         try {
-          this.logger.debug(`try convert function index: ${index}`, {
-            convertFunction,
-            mergedOption,
-            convertedText,
-          });
+          this.logger.debug(
+            `try convert function index: ${convertFunctionIndex}`,
+            {
+              convertFunction,
+              mergedOption,
+              convertedText,
+            },
+          );
           convertedText = await convertFunction(
             convertedText,
             mergedOption,
@@ -223,14 +249,22 @@ export class Converter<
           break;
         } catch (error) {
           this.logger.error(
-            makeFailedToConvertFunctionError(name, index, error).message,
+            makeFailedToConvertFunctionError(name, convertFunctionIndex, error)
+              .message,
             error,
           );
           detail.errors ??= [];
           detail.errors.push(error);
+        } finally {
+          this.onEndConvertFunction?.(
+            structuredClone(detail),
+            usingPluginsIndex,
+            convertFunctionIndex,
+          );
         }
       }
       details.push(detail);
+      this.onEndPluginConvert?.(detail, usingPluginsIndex);
       if (this.converterOption.interruptWithPluginError) {
         throw makeFailedToAllConvertFunctionError(name, detail.errors!);
       }
