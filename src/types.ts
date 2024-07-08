@@ -136,6 +136,7 @@ export interface ConverterConvertResult<
   };
 }
 
+/** Converter.convertでプラグインでの変換が成功または失敗したあとに呼び出されるコールバック関数 */
 export type ConverterEndPluginConvertHandler<
   TPlugins extends Record<
     string,
@@ -150,6 +151,7 @@ export type ConverterEndPluginConvertHandler<
   usingPluginsIndex: number,
 ) => void;
 
+/** Converter.convertでプラグインのConvertFunctionが実行されたあとに呼び出されるコールバック関数 */
 export type ConverterEndConvertFunctionHandler<
   TPlugins extends Record<
     string,
