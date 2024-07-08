@@ -185,9 +185,7 @@ Deno.test("module plugin convert", async () => {
   );
 
   assertEquals(text, "ごんにさゎ。。。");
-  assertEquals(details.length, 2);
-  assertEquals(details[0].ok, true);
-  assertEquals(details[1].ok, true);
+  assertEquals(details.map(({ ok }) => ok), [true, true]);
 });
 
 Deno.test("dynamic module plugin convert", async () => {
@@ -204,9 +202,7 @@ Deno.test("dynamic module plugin convert", async () => {
   );
 
   assertEquals(text, "ごんにさゎ。。。");
-  assertEquals(details.length, 2);
-  assertEquals(details[0].ok, true);
-  assertEquals(details[1].ok, true);
+  assertEquals(details.map(({ ok }) => ok), [true, true]);
 });
 
 Deno.test("multiple plugins convert", async () => {
@@ -268,13 +264,14 @@ Deno.test("multiple plugins convert", async () => {
     ] as const,
   );
   assertEquals(text, "BazTestFooTestFooBar");
-  assertEquals(details.length, 6);
-  assertEquals(details[0].ok, true);
-  assertEquals(details[1].ok, true);
-  assertEquals(details[2].ok, true);
-  assertEquals(details[3].ok, false);
+  assertEquals(details.map(({ ok }) => ok), [
+    true,
+    true,
+    true,
+    false,
+    true,
+    true,
+  ]);
   assertInstanceOf(details[3].errors?.at(0), Error);
-  assertEquals(details[4].ok, true);
   assertInstanceOf(details[4].errors?.at(0), Error);
-  assertEquals(details[5].ok, true);
 });
