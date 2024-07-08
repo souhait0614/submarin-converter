@@ -61,9 +61,9 @@ export class Converter<
 > {
   plugins: TPlugins;
   converterOption: Required<ConverterOption>;
-  private logger: Logger;
-  private onEndConvertFunction?: ConverterEndConvertFunctionHandler<TPlugins>;
-  private onEndPluginConvert?: ConverterEndPluginConvertHandler<TPlugins>;
+  #logger: Logger;
+  #onEndConvertFunction?: ConverterEndConvertFunctionHandler<TPlugins>;
+  #onEndPluginConvert?: ConverterEndPluginConvertHandler<TPlugins>;
 
   /**
    * Converterインスタンスを構築します
@@ -94,11 +94,11 @@ export class Converter<
       onEndPluginConvert?: ConverterEndPluginConvertHandler<TPlugins>;
     } = {},
   ) {
-    this.logger = new Logger(
+    this.#logger = new Logger(
       options.converterOption?.logLevel ?? defaultConverterOption.logLevel,
     );
-    this.logger.debug("Logger is initialized:", this.logger);
-    this.logger.debug("Converter constructor is called:", {
+    this.#logger.debug("Logger is initialized:", this.#logger);
+    this.#logger.debug("Converter constructor is called:", {
       plugins,
       options,
     });
@@ -120,33 +120,33 @@ export class Converter<
               convertFunctions,
           };
           tempPlugins[name as TPluginIDs] = plugin;
-          this.logger.debug(`Plugin "${name}" is loaded.`, plugin);
+          this.#logger.debug(`Plugin "${name}" is loaded.`, plugin);
         } else {
           const plugin = {
             convertFunctions: (extendConvertFunction?.(convertFunctions) ??
               convertFunctions) as PluginConvertFunction<undefined>[],
           };
           tempPlugins[name as TPluginIDs] = plugin;
-          this.logger.debug(`Plugin "${name}" is loaded.`, plugin);
+          this.#logger.debug(`Plugin "${name}" is loaded.`, plugin);
         }
       },
     );
     this.plugins = tempPlugins as TPlugins;
-    this.logger.debug("Plugins are loaded:", this.plugins);
+    this.#logger.debug("Plugins are loaded:", this.plugins);
     this.converterOption = {
       ...defaultConverterOption,
       ...options.converterOption,
     };
-    this.logger.debug("ConverterOption is initialized:", this.converterOption);
-    this.onEndConvertFunction = options.onEndConvertFunction;
-    this.logger.debug(
+    this.#logger.debug("ConverterOption is initialized:", this.converterOption);
+    this.#onEndConvertFunction = options.onEndConvertFunction;
+    this.#logger.debug(
       "EndConvertFunction is initialized:",
-      this.onEndConvertFunction,
+      this.#onEndConvertFunction,
     );
-    this.onEndPluginConvert = options.onEndPluginConvert;
-    this.logger.debug(
+    this.#onEndPluginConvert = options.onEndPluginConvert;
+    this.#logger.debug(
       "EndPluginConvert is initialized:",
-      this.onEndPluginConvert,
+      this.#onEndPluginConvert,
     );
   }
 
@@ -167,7 +167,7 @@ export class Converter<
   ): Promise<
     ConverterConvertResult<TPlugins, TUsingPlugins>
   > {
-    this.logger.debug("convert is called:", {
+    this.#logger.debug("convert is called:", {
       text,
       usingPlugins,
     }, this);
@@ -188,7 +188,7 @@ export class Converter<
         ? { name: usingPlugin, option: undefined }
         : usingPlugin;
       const plugin: TPlugins[typeof name] | undefined = this.plugins[name];
-      this.logger.debug(`using plugin: "${name}"`, {
+      this.#logger.debug(`using plugin: "${name}"`, {
         option,
         plugin,
       });
@@ -196,7 +196,7 @@ export class Converter<
         if (this.converterOption.interruptWithPluginError) {
           throw new Error(`Plugin "${name}" is not found.`);
         }
-        this.logger.warn(`Plugin "${name}" is not found.`);
+        this.#logger.warn(`Plugin "${name}" is not found.`);
         break;
       }
       const mergedOption = plugin.defaultOption
@@ -205,7 +205,7 @@ export class Converter<
           option ?? {},
         )
         : {};
-      this.logger.debug("merged option:", {
+      this.#logger.debug("merged option:", {
         option,
         mergedOption,
       });
@@ -227,7 +227,7 @@ export class Converter<
       ) {
         const convertFunctionIndex = Number(convertFunctionIndexString);
         try {
-          this.logger.debug(
+          this.#logger.debug(
             `try convert function index: ${convertFunctionIndex}`,
             {
               convertFunction,
@@ -241,14 +241,14 @@ export class Converter<
           );
           detail.ok = true;
           detail.convertedText = convertedText;
-          this.logger.debug("convert function succeeded:", {
+          this.#logger.debug("convert function succeeded:", {
             convertFunction,
             mergedOption,
             convertedText,
           });
           break;
         } catch (error) {
-          this.logger.error(
+          this.#logger.error(
             makeFailedToConvertFunctionError(name, convertFunctionIndex, error)
               .message,
             error,
@@ -256,7 +256,7 @@ export class Converter<
           detail.errors ??= [];
           detail.errors.push(error);
         } finally {
-          this.onEndConvertFunction?.(
+          this.#onEndConvertFunction?.(
             structuredClone(detail),
             usingPluginsIndex,
             convertFunctionIndex,
@@ -264,7 +264,7 @@ export class Converter<
         }
       }
       details.push(detail);
-      this.onEndPluginConvert?.(detail, usingPluginsIndex);
+      this.#onEndPluginConvert?.(detail, usingPluginsIndex);
       if (this.converterOption.interruptWithPluginError) {
         throw makeFailedToAllConvertFunctionError(name, detail.errors!);
       }
@@ -276,7 +276,7 @@ export class Converter<
         TUsingPlugins
       >["details"],
     };
-    this.logger.debug("convert result:", result);
+    this.#logger.debug("convert result:", result);
     return result;
   }
 }
