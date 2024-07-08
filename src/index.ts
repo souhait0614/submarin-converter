@@ -60,6 +60,8 @@ export type {
   ConverterConvertOrder,
   ConverterConvertResult,
   ConverterConvertResultDetail,
+  ConverterEndConvertFunctionHandler,
+  ConverterEndPluginConvertHandler,
   ConverterOption,
   Plugin,
   PluginConvertFunction,
