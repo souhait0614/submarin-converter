@@ -3,11 +3,14 @@ import type {
   ConverterConvertResult,
   ConverterConvertResultDetail,
   ConverterConvertUsingPlugin,
+  ConverterEndConvertFunctionHandler,
+  ConverterEndPluginConvertHandler,
   ConverterOption,
   Plugin,
   PluginConvertFunction,
 } from "./types.ts";
 import { defaultConverterOption } from "./constants.ts";
+import { Logger } from "./logger.ts";
 
 const makeFailedToConvertFunctionError = (
   name: string,
@@ -58,15 +61,20 @@ export class Converter<
 > {
   plugins: TPlugins;
   converterOption: Required<ConverterOption>;
+  private logger: Logger;
+  private onEndConvertFunction?: ConverterEndConvertFunctionHandler<TPlugins>;
+  private onEndPluginConvert?: ConverterEndPluginConvertHandler<TPlugins>;
 
   /**
    * Converterインスタンスを構築します
    *
-   * @param {TPlugins} plugins - コンバータで使用するプラグイン
-   * @param {Object} [options] - コンバータのオプション設定
+   * @param {TPlugins} plugins - 使用するプラグイン
+   * @param {Object} [options]
    * @param {Object} [options.pluginOptions] - 各プラグインのオプション
    * @param {Object} [options.extendConvertFunctions] - 各プラグインの変換関数を拡張するための関数
-   * @param {ConverterOption} [options.converterOption] - 一般的なコンバータオプション
+   * @param {ConverterOption} [options.converterOption] - Converter本体のオプション
+   * @param {ConverterEndConvertFunctionHandler<TPlugins>} [options.onEndConvertFunction] - Converter.convertでプラグインのConvertFunctionが実行されたあとに呼び出されるコールバック関数
+   * @param {ConverterEndPluginConvertHandler<TPlugins>} [options.onEndPluginConvert] - Converter.convertでプラグインでの変換が成功または失敗したあとに呼び出されるコールバック関数
    */
   constructor(
     plugins: TPlugins,
@@ -82,8 +90,18 @@ export class Converter<
         ) => TPlugins[P]["convertFunctions"];
       };
       converterOption?: ConverterOption;
+      onEndConvertFunction?: ConverterEndConvertFunctionHandler<TPlugins>;
+      onEndPluginConvert?: ConverterEndPluginConvertHandler<TPlugins>;
     } = {},
   ) {
+    this.logger = new Logger(
+      options.converterOption?.logLevel ?? defaultConverterOption.logLevel,
+    );
+    this.logger.debug("Logger is initialized:", this.logger);
+    this.logger.debug("Converter constructor is called:", {
+      plugins,
+      options,
+    });
     const tempPlugins: Partial<
       Record<TPluginIDs, Plugin<object | undefined>>
     > = {};
@@ -94,26 +112,42 @@ export class Converter<
           name as TPluginIDs
         ];
         if (defaultOption) {
-          tempPlugins[name as TPluginIDs] = {
+          const plugin = {
             defaultOption: pluginOption
               ? deepMerge(defaultOption, pluginOption)
               : defaultOption,
             convertFunctions: extendConvertFunction?.(convertFunctions) ??
               convertFunctions,
           };
+          tempPlugins[name as TPluginIDs] = plugin;
+          this.logger.debug(`Plugin "${name}" is loaded.`, plugin);
         } else {
-          tempPlugins[name as TPluginIDs] = {
+          const plugin = {
             convertFunctions: (extendConvertFunction?.(convertFunctions) ??
               convertFunctions) as PluginConvertFunction<undefined>[],
           };
+          tempPlugins[name as TPluginIDs] = plugin;
+          this.logger.debug(`Plugin "${name}" is loaded.`, plugin);
         }
       },
     );
     this.plugins = tempPlugins as TPlugins;
+    this.logger.debug("Plugins are loaded:", this.plugins);
     this.converterOption = {
       ...defaultConverterOption,
       ...options.converterOption,
     };
+    this.logger.debug("ConverterOption is initialized:", this.converterOption);
+    this.onEndConvertFunction = options.onEndConvertFunction;
+    this.logger.debug(
+      "EndConvertFunction is initialized:",
+      this.onEndConvertFunction,
+    );
+    this.onEndPluginConvert = options.onEndPluginConvert;
+    this.logger.debug(
+      "EndPluginConvert is initialized:",
+      this.onEndPluginConvert,
+    );
   }
 
   /**
@@ -133,6 +167,10 @@ export class Converter<
   ): Promise<
     ConverterConvertResult<TPlugins, TUsingPlugins>
   > {
+    this.logger.debug("convert is called:", {
+      text,
+      usingPlugins,
+    }, this);
     let convertedText = text;
     const details: Array<
       ConverterConvertResultDetail<
@@ -140,15 +178,25 @@ export class Converter<
         TPluginIDs
       >
     > = [];
-    for await (const usingPlugin of usingPlugins) {
+    for await (
+      const [usingPluginsIndexString, usingPlugin] of Object.entries(
+        usingPlugins,
+      )
+    ) {
+      const usingPluginsIndex = Number(usingPluginsIndexString);
       const { name, option } = typeof usingPlugin === "string"
         ? { name: usingPlugin, option: undefined }
         : usingPlugin;
       const plugin: TPlugins[typeof name] | undefined = this.plugins[name];
+      this.logger.debug(`using plugin: "${name}"`, {
+        option,
+        plugin,
+      });
       if (!plugin) {
         if (this.converterOption.interruptWithPluginError) {
           throw new Error(`Plugin "${name}" is not found.`);
         }
+        this.logger.warn(`Plugin "${name}" is not found.`);
         break;
       }
       const mergedOption = plugin.defaultOption
@@ -157,6 +205,10 @@ export class Converter<
           option ?? {},
         )
         : {};
+      this.logger.debug("merged option:", {
+        option,
+        mergedOption,
+      });
       const detail = {
         ok: false,
         order: {
@@ -169,37 +221,62 @@ export class Converter<
         TPluginIDs
       >;
       for await (
-        const [indexString, convertFunction] of Object.entries(
+        const [convertFunctionIndexString, convertFunction] of Object.entries(
           plugin.convertFunctions,
         )
       ) {
-        const index = Number(indexString);
+        const convertFunctionIndex = Number(convertFunctionIndexString);
         try {
+          this.logger.debug(
+            `try convert function index: ${convertFunctionIndex}`,
+            {
+              convertFunction,
+              mergedOption,
+              convertedText,
+            },
+          );
           convertedText = await convertFunction(
             convertedText,
             mergedOption,
           );
           detail.ok = true;
           detail.convertedText = convertedText;
-          details.push(detail);
+          this.logger.debug("convert function succeeded:", {
+            convertFunction,
+            mergedOption,
+            convertedText,
+          });
           break;
         } catch (error) {
-          console.error(makeFailedToConvertFunctionError(name, index, error));
+          this.logger.error(
+            makeFailedToConvertFunctionError(name, convertFunctionIndex, error)
+              .message,
+            error,
+          );
           detail.errors ??= [];
           detail.errors.push(error);
+        } finally {
+          this.onEndConvertFunction?.(
+            structuredClone(detail),
+            usingPluginsIndex,
+            convertFunctionIndex,
+          );
         }
-        details.push(detail);
       }
+      details.push(detail);
+      this.onEndPluginConvert?.(detail, usingPluginsIndex);
       if (this.converterOption.interruptWithPluginError) {
         throw makeFailedToAllConvertFunctionError(name, detail.errors!);
       }
     }
-    return {
+    const result = {
       text: convertedText,
       details: details as ConverterConvertResult<
         TPlugins,
         TUsingPlugins
       >["details"],
     };
+    this.logger.debug("convert result:", result);
+    return result;
   }
 }

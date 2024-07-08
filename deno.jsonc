@@ -1,6 +1,6 @@
 {
   "name": "@submarin-converter/core",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "exports": "./src/index.ts",
   "imports": {
     "@std/assert": "jsr:@std/assert@^0.226.0",
