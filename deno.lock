@@ -1,67 +1,60 @@
 {
-  "version": "3",
-  "packages": {
-    "specifiers": {
-      "jsr:@std/assert": "jsr:@std/assert@0.226.0",
-      "jsr:@std/assert@^0.226.0": "jsr:@std/assert@0.226.0",
-      "jsr:@std/collections@^0.224.2": "jsr:@std/collections@0.224.2",
-      "jsr:@std/internal@^1.0.0": "jsr:@std/internal@1.0.0",
-      "jsr:@submarin-converter/plugin-cjp@^0.2.0": "jsr:@submarin-converter/plugin-cjp@0.2.0",
-      "jsr:@submarin-converter/plugin-genhera@^0.2.0": "jsr:@submarin-converter/plugin-genhera@0.2.0",
-      "npm:cjp@^2.3.1": "npm:cjp@2.3.1",
-      "npm:genhera@^1.1.0": "npm:genhera@1.1.0"
+  "version": "4",
+  "specifiers": {
+    "jsr:@std/assert@^1.0.11": "1.0.11",
+    "jsr:@std/collections@^1.0.10": "1.0.10",
+    "jsr:@std/internal@^1.0.5": "1.0.5",
+    "jsr:@submarin-converter/plugin-cjp@~0.3.1": "0.3.1",
+    "jsr:@submarin-converter/plugin-genhera@~0.3.1": "0.3.1",
+    "npm:cjp@^2.3.1": "2.3.1",
+    "npm:genhera@^1.1.0": "1.1.0"
+  },
+  "jsr": {
+    "@std/assert@1.0.11": {
+      "integrity": "2461ef3c368fe88bc60e186e7744a93112f16fd110022e113a0849e94d1c83c1",
+      "dependencies": [
+        "jsr:@std/internal"
+      ]
     },
-    "jsr": {
-      "@std/assert@0.226.0": {
-        "integrity": "0dfb5f7c7723c18cec118e080fec76ce15b4c31154b15ad2bd74822603ef75b3",
-        "dependencies": [
-          "jsr:@std/internal@^1.0.0"
-        ]
-      },
-      "@std/collections@0.224.2": {
-        "integrity": "e77819455294e92d4e7ddad1dbfd46f94174c09318e541e6621fac4a4d0ab326"
-      },
-      "@std/internal@1.0.0": {
-        "integrity": "ac6a6dfebf838582c4b4f61a6907374e27e05bedb6ce276e0f1608fe84e7cd9a"
-      },
-      "@submarin-converter/plugin-cjp@0.2.0": {
-        "integrity": "87c8a1a24c0871657391e52442241e6d896585797970eb071755d2171137c4dd",
-        "dependencies": [
-          "jsr:@submarin-converter/core@^0.1.1",
-          "npm:cjp@^2.3.1"
-        ]
-      },
-      "@submarin-converter/plugin-genhera@0.2.0": {
-        "integrity": "0735fd370067cf40e976df7b7eaf137f9e6f9b28aa5fdb6028a0b1b4caa52d78",
-        "dependencies": [
-          "npm:genhera@^1.1.0"
-        ]
-      }
+    "@std/collections@1.0.10": {
+      "integrity": "903af106a3d92970d74e20f7ebff77d9658af9bef4403f1dc42a7801c0575899"
     },
-    "npm": {
-      "@submarin/generator@1.0.0": {
-        "integrity": "sha512-XuBVSRN5XGzVJYyrBj+pFo3GmubpKwWoRfyhO6p/VuCHAQ7zpPU+0k6Yuiw0pauWIsuJwdcRWhZgRXIxG2kalA==",
-        "dependencies": {}
-      },
-      "cjp@2.3.1": {
-        "integrity": "sha512-TeovKU2X165UpIrDtGb5zP05YcY+dYEAoNO0hT8RcB8Bpj2qMigR5/iGJNOFE/DwEmdKs4dIN3EoZKX4aa8X/w==",
-        "dependencies": {}
-      },
-      "genhera@1.1.0": {
-        "integrity": "sha512-dSBDvfde489r876QaBIVx8fOzYI3JSgg/qvnit0GzGkrOoCn5zvKiQYlgIe2a3YqxM37vWWJ9yb+ze4Zdv127A==",
-        "dependencies": {
-          "@submarin/generator": "@submarin/generator@1.0.0"
-        }
-      }
+    "@std/internal@1.0.5": {
+      "integrity": "54a546004f769c1ac9e025abd15a76b6671ddc9687e2313b67376125650dc7ba"
+    },
+    "@submarin-converter/plugin-cjp@0.3.1": {
+      "integrity": "575babeefd1523d8fbc62462a02fa46a0a29a374b2c4691cf534dc341d8b95cc",
+      "dependencies": [
+        "npm:cjp"
+      ]
+    },
+    "@submarin-converter/plugin-genhera@0.3.1": {
+      "integrity": "5dabaf7df3570fce5338378643a6a499de76ecbb0a3bdaff97cfcc203146c3d0",
+      "dependencies": [
+        "npm:genhera"
+      ]
     }
   },
-  "remote": {},
+  "npm": {
+    "@submarin/generator@1.0.0": {
+      "integrity": "sha512-XuBVSRN5XGzVJYyrBj+pFo3GmubpKwWoRfyhO6p/VuCHAQ7zpPU+0k6Yuiw0pauWIsuJwdcRWhZgRXIxG2kalA=="
+    },
+    "cjp@2.3.1": {
+      "integrity": "sha512-TeovKU2X165UpIrDtGb5zP05YcY+dYEAoNO0hT8RcB8Bpj2qMigR5/iGJNOFE/DwEmdKs4dIN3EoZKX4aa8X/w=="
+    },
+    "genhera@1.1.0": {
+      "integrity": "sha512-dSBDvfde489r876QaBIVx8fOzYI3JSgg/qvnit0GzGkrOoCn5zvKiQYlgIe2a3YqxM37vWWJ9yb+ze4Zdv127A==",
+      "dependencies": [
+        "@submarin/generator"
+      ]
+    }
+  },
   "workspace": {
     "dependencies": [
-      "jsr:@std/assert@^0.226.0",
-      "jsr:@std/collections@^0.224.2",
-      "jsr:@submarin-converter/plugin-cjp@^0.2.0",
-      "jsr:@submarin-converter/plugin-genhera@^0.2.0"
+      "jsr:@std/assert@^1.0.11",
+      "jsr:@std/collections@^1.0.10",
+      "jsr:@submarin-converter/plugin-cjp@~0.3.1",
+      "jsr:@submarin-converter/plugin-genhera@~0.3.1"
     ]
   }
 }

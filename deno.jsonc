@@ -3,10 +3,10 @@
   "version": "0.2.0",
   "exports": "./src/index.ts",
   "imports": {
-    "@std/assert": "jsr:@std/assert@^0.226.0",
-    "@std/collections": "jsr:@std/collections@^0.224.2",
-    "@submarin-converter/plugin-cjp": "jsr:@submarin-converter/plugin-cjp@^0.2.0",
-    "@submarin-converter/plugin-genhera": "jsr:@submarin-converter/plugin-genhera@^0.2.0"
+    "@std/assert": "jsr:@std/assert@^1.0.11",
+    "@std/collections": "jsr:@std/collections@^1.0.10",
+    "@submarin-converter/plugin-cjp": "jsr:@submarin-converter/plugin-cjp@^0.3.1",
+    "@submarin-converter/plugin-genhera": "jsr:@submarin-converter/plugin-genhera@^0.3.1"
   },
   "publish": {
     "include": [
