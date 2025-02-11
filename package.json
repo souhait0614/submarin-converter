@@ -4,7 +4,7 @@
     "test:bun": "vitest --run --config ./runtime-tests/bun/vitest.config.ts"
   },
   "dependencies": {
-    "@std/collections": "npm:@jsr/std__collections@^1.0.10"
+    "deepmerge-ts": "^7.1.4"
   },
   "devDependencies": {
     "@submarin-converter/plugin-cjp": "npm:@jsr/submarin-converter__plugin-cjp@^0.3.2",
