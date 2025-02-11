@@ -1,0 +1,14 @@
+{
+  "scripts": {
+    "test:node": "vitest --run --config ./runtime-tests/node/vitest.config.ts",
+    "test:bun": "vitest --run --config ./runtime-tests/bun/vitest.config.ts"
+  },
+  "dependencies": {
+    "@std/collections": "npm:@jsr/std__collections@^1.0.10"
+  },
+  "devDependencies": {
+    "@submarin-converter/plugin-cjp": "npm:@jsr/submarin-converter__plugin-cjp@^0.3.2",
+    "@submarin-converter/plugin-genhera": "npm:@jsr/submarin-converter__plugin-genhera@^0.3.2",
+    "vitest": "^3.0.5"
+  }
+}
