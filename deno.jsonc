@@ -16,6 +16,7 @@
       "README.md",
       "deno.jsonc",
       "package.json",
+      ".npmrc",
       "src/**/*.ts"
     ]
   }
