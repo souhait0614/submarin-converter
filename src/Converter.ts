@@ -1,4 +1,3 @@
-import { deepMerge } from "@std/collections";
 import type {
   ConverterConvertResult,
   ConverterConvertResultDetail,
@@ -11,6 +10,7 @@ import type {
 } from "./types.ts";
 import { defaultConverterOption } from "./constants.ts";
 import { Logger } from "./logger.ts";
+import { deepmerge } from "deepmerge-ts";
 
 const makeFailedToConvertFunctionError = (
   name: string,
@@ -114,7 +114,7 @@ export class Converter<
         if (defaultOption) {
           const plugin = {
             defaultOption: pluginOption
-              ? deepMerge(defaultOption, pluginOption)
+              ? deepmerge(defaultOption, pluginOption) as object
               : defaultOption,
             convertFunctions: extendConvertFunction?.(convertFunctions) ??
               convertFunctions,
@@ -200,7 +200,7 @@ export class Converter<
         break;
       }
       const mergedOption = plugin.defaultOption
-        ? deepMerge(
+        ? deepmerge(
           plugin.defaultOption,
           option ?? {},
         )

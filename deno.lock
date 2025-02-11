@@ -6,6 +6,7 @@
     "npm:@jsr/std__collections@^1.0.10": "1.0.10",
     "npm:@jsr/submarin-converter__plugin-cjp@~0.3.2": "0.3.2",
     "npm:@jsr/submarin-converter__plugin-genhera@~0.3.2": "0.3.2",
+    "npm:deepmerge-ts@^7.1.4": "7.1.4",
     "npm:vitest@^3.0.5": "3.0.5_vite@6.1.0"
   },
   "jsr": {
@@ -268,6 +269,9 @@
     "deep-eql@5.0.2": {
       "integrity": "sha512-h5k/5U50IJJFpzfL6nO9jaaumfjO/f2NjK/oYB2Djzm4p9L+3T9qWpZqZ2hAbLPuuYq9wrU08WQyBTL5GbPk5Q=="
     },
+    "deepmerge-ts@7.1.4": {
+      "integrity": "sha512-fxqo6nHGQ9zOVgI4KXqtWXJR/yCLtC7aXIVq+6jc8tHPFUxlFmuUcm2kC4vztQ+LJxQ3gER/XAWearGYQ8niGA=="
+    },
     "es-module-lexer@1.6.0": {
       "integrity": "sha512-qqnD1yMU6tk/jnaMosogGySTZP8YtUgAffA9nMN+E/rjxcfRQ6IEk7IiozUjgxKoFHBGjTLnrHB/YC45r/59EQ=="
     },
@@ -462,9 +466,9 @@
     ],
     "packageJson": {
       "dependencies": [
-        "npm:@jsr/std__collections@^1.0.10",
         "npm:@jsr/submarin-converter__plugin-cjp@~0.3.2",
         "npm:@jsr/submarin-converter__plugin-genhera@~0.3.2",
+        "npm:deepmerge-ts@^7.1.4",
         "npm:vitest@^3.0.5"
       ]
     }
