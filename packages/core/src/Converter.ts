@@ -1,10 +1,10 @@
 import type {
+  ConverterConvertOutput,
   ConverterConvertResult,
-  ConverterConvertResultDetail,
-  ConverterConvertUsingPlugin,
   ConverterEndConvertFunctionHandler,
   ConverterEndPluginConvertHandler,
   ConverterOption,
+  ConverterPluginOrder,
   Plugin,
   PluginConvertFunction,
 } from "./types.ts";
@@ -153,34 +153,34 @@ export class Converter<
   /**
    * 指定されたプラグインを使用してテキストを変換します
    *
-   * @template TUsingPlugins - 変換に使用するプラグインのタプル
-   * @param {string} text - 変換するテキスト
-   * @param {TUsingPlugins} usingPlugins - 変換に使用するプラグイン
-   * @returns {Promise<ConverterConvertResult<TPlugins, TUsingPlugins>>} - 変換の結果
+   * @template TPluginOrders - 変換に使用するプラグインのタプル
+   * @param {string} input - 変換するテキスト
+   * @param {TPluginOrders} pluginOrders - 変換に使用するプラグイン
+   * @returns {Promise<ConverterConvertOutput<TPlugins, TPluginOrders>>} - 変換の結果
    * @throws {Error} - プラグインが見つからない場合や変換に失敗した場合にエラーをスローします
    */
   async convert<
-    TUsingPlugins extends ConverterConvertUsingPlugin<TPlugins>[],
+    TPluginOrders extends ConverterPluginOrder<TPlugins>[],
   >(
-    text: string,
-    usingPlugins: TUsingPlugins,
+    input: string,
+    pluginOrders: TPluginOrders,
   ): Promise<
-    ConverterConvertResult<TPlugins, TUsingPlugins>
+    ConverterConvertOutput<TPlugins, TPluginOrders>
   > {
     this.#logger.debug("convert is called:", {
-      text,
-      usingPlugins,
+      input,
+      pluginOrders,
     }, this);
-    let convertedText = text;
-    const details: Array<
-      ConverterConvertResultDetail<
+    let convertedText = input;
+    const results: Array<
+      ConverterConvertResult<
         TPlugins,
         TPluginIDs
       >
     > = [];
     for await (
       const [usingPluginsIndexString, usingPlugin] of Object.entries(
-        usingPlugins,
+        pluginOrders,
       )
     ) {
       const usingPluginsIndex = Number(usingPluginsIndexString);
@@ -211,12 +211,12 @@ export class Converter<
       });
       const detail = {
         ok: false,
-        order: {
+        pluginOrder: {
           name,
           option: plugin.defaultOption ? mergedOption : undefined,
         },
         convertedText,
-      } as ConverterConvertResultDetail<
+      } as ConverterConvertResult<
         TPlugins,
         TPluginIDs
       >;
@@ -263,20 +263,20 @@ export class Converter<
           );
         }
       }
-      details.push(detail);
+      results.push(detail);
       this.#onEndPluginConvert?.(detail, usingPluginsIndex);
       if (this.converterOption.interruptWithPluginError) {
         throw makeFailedToAllConvertFunctionError(name, detail.errors!);
       }
     }
-    const result = {
+    const output = {
       text: convertedText,
-      details: details as ConverterConvertResult<
+      results: results as ConverterConvertOutput<
         TPlugins,
-        TUsingPlugins
-      >["details"],
+        TPluginOrders
+      >["results"],
     };
-    this.#logger.debug("convert result:", result);
-    return result;
+    this.#logger.debug("convert output:", output);
+    return output;
   }
 }

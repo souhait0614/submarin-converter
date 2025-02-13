@@ -55,7 +55,7 @@ export interface ConverterOption {
   logLevel?: LogLevels;
 }
 
-export type ConverterConvertUsingPlugin<
+export type ConverterPluginOrder<
   TPlugins extends Record<
     string,
     Plugin<object | undefined>
@@ -74,7 +74,7 @@ export type ConverterConvertUsingPlugin<
   }[TPluginIDs];
 
 /** Converter.convertで指定したPluginとPluginが使用したオプションの値 */
-export type ConverterConvertOrder<
+export type ConverterConvertPluginOrder<
   TPlugins extends Record<
     string,
     Plugin<object | undefined>
@@ -96,14 +96,14 @@ export type ConverterConvertOrderName<
     string,
     Plugin<object | undefined>
   >,
-  TUsingPlugin extends ConverterConvertUsingPlugin<TPlugins>,
-> = TUsingPlugin extends
+  TPluginOrder extends ConverterPluginOrder<TPlugins>,
+> = TPluginOrder extends
   { name: infer R extends Extract<keyof TPlugins, string> } ? R
-  : TUsingPlugin extends Extract<keyof TPlugins, string> ? TUsingPlugin
+  : TPluginOrder extends Extract<keyof TPlugins, string> ? TPluginOrder
   : never;
 
 /** Converter.convertで指定したPluginごとの変換結果 */
-export type ConverterConvertResultDetail<
+export type ConverterConvertResult<
   TPlugins extends Record<
     string,
     Plugin<object | undefined>
@@ -113,25 +113,25 @@ export type ConverterConvertResultDetail<
     string
   >,
 > = {
-  order: ConverterConvertOrder<TPlugins, TPluginIDs>;
+  pluginOrder: ConverterConvertPluginOrder<TPlugins, TPluginIDs>;
   ok: boolean;
   errors?: unknown[];
   convertedText: string;
 };
 
 /** Converter.convertの返り値 */
-export interface ConverterConvertResult<
+export interface ConverterConvertOutput<
   TPlugins extends Record<
     string,
     Plugin<object | undefined>
   >,
-  TUsingPlugins extends ConverterConvertUsingPlugin<TPlugins>[],
+  TPluginOrders extends ConverterPluginOrder<TPlugins>[],
 > {
   text: string;
-  details: {
-    [K in keyof TUsingPlugins]: ConverterConvertResultDetail<
+  results: {
+    [K in keyof TPluginOrders]: ConverterConvertResult<
       TPlugins,
-      ConverterConvertOrderName<TPlugins, TUsingPlugins[K]>
+      ConverterConvertOrderName<TPlugins, TPluginOrders[K]>
     >;
   };
 }
@@ -147,7 +147,7 @@ export type ConverterEndPluginConvertHandler<
     string
   >,
 > = (
-  detail: ConverterConvertResultDetail<TPlugins, TPluginIDs>,
+  detail: ConverterConvertResult<TPlugins, TPluginIDs>,
   usingPluginsIndex: number,
 ) => void;
 
@@ -162,7 +162,7 @@ export type ConverterEndConvertFunctionHandler<
     string
   >,
 > = (
-  detail: ConverterConvertResultDetail<TPlugins, TPluginIDs>,
+  detail: ConverterConvertResult<TPlugins, TPluginIDs>,
   usingPluginsIndex: number,
   convertFunctionIndex: number,
 ) => void;

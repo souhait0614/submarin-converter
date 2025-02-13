@@ -71,7 +71,7 @@ const output = await converter.convert(
 console.log(output.text) // "ごんにさゎ。。。"
 ```
 
-### Convert details
+### Convert results
 
 ```typescript
 import { Converter, type Plugin } from "@submarin-converter/core";
@@ -93,9 +93,9 @@ const output = await converter.convert(
   ] as const,
 );
 // cjp convert result
-console.log(output.details[0].ok) // true
-console.log(output.details[0].convertedText) // "ごんにさは。"
+console.log(output.results[0].ok) // true
+console.log(output.results[0].convertedText) // "ごんにさは。"
 // genhera convert result
-console.log(output.details[1].ok) // true
-console.log(output.details[1].convertedText) // "ごんにさゎ。。。"
+console.log(output.results[1].ok) // true
+console.log(output.results[1].convertedText) // "ごんにさゎ。。。"
 ```

@@ -1,6 +1,6 @@
 import {
   Converter,
-  type ConverterConvertResultDetail,
+  type ConverterConvertResult,
   type ConverterEndConvertFunctionHandler,
   type Plugin,
 } from "@submarin-converter/core";
@@ -17,10 +17,10 @@ Deno.test("single convert", async () => {
   const converter = new Converter({
     double,
   }, { converterOption: { logLevel: "debug" } });
-  const { text, details } = await converter.convert("Test", ["double"]);
+  const { text, results } = await converter.convert("Test", ["double"]);
   assertEquals(text, "TestTest");
-  assertEquals(details.length, 1);
-  assertEquals(details[0].ok, true);
+  assertEquals(results.length, 1);
+  assertEquals(results[0].ok, true);
 });
 
 Deno.test("option convert", async () => {
@@ -31,13 +31,13 @@ Deno.test("option convert", async () => {
   const converter = new Converter({
     suffix,
   }, { converterOption: { logLevel: "debug" } });
-  const { text, details } = await converter.convert("Test", [{
+  const { text, results } = await converter.convert("Test", [{
     name: "suffix",
     option: { suffix: "Foo" },
   }]);
   assertEquals(text, "TestFoo");
-  assertEquals(details.length, 1);
-  assertEquals(details[0].ok, true);
+  assertEquals(results.length, 1);
+  assertEquals(results[0].ok, true);
 });
 
 Deno.test("fallback convert function", async () => {
@@ -50,14 +50,14 @@ Deno.test("fallback convert function", async () => {
   const converter = new Converter({
     prefix,
   }, { converterOption: { logLevel: "debug" } });
-  const { text, details } = await converter.convert("Test", [{
+  const { text, results } = await converter.convert("Test", [{
     name: "prefix",
     option: { prefix: "Foo" },
   }]);
   assertEquals(text, "FooTest");
-  assertEquals(details.length, 1);
-  assertEquals(details[0].ok, true);
-  assertInstanceOf(details[0].errors?.at(0), Error);
+  assertEquals(results.length, 1);
+  assertEquals(results[0].ok, true);
+  assertInstanceOf(results[0].errors?.at(0), Error);
 });
 
 Deno.test("failed convert", async () => {
@@ -69,11 +69,11 @@ Deno.test("failed convert", async () => {
   const converter = new Converter({
     error,
   }, { converterOption: { logLevel: "debug" } });
-  const { text, details } = await converter.convert("Test", ["error"]);
+  const { text, results } = await converter.convert("Test", ["error"]);
   assertEquals(text, "Test");
-  assertEquals(details.length, 1);
-  assertEquals(details[0].ok, false);
-  assertInstanceOf(details[0].errors?.at(0), Error);
+  assertEquals(results.length, 1);
+  assertEquals(results[0].ok, false);
+  assertInstanceOf(results[0].errors?.at(0), Error);
 });
 
 Deno.test("async convert", async () => {
@@ -89,13 +89,13 @@ Deno.test("async convert", async () => {
   const converter = new Converter({
     sleep,
   }, { converterOption: { logLevel: "debug" } });
-  const { text, details } = await converter.convert("Test", [{
+  const { text, results } = await converter.convert("Test", [{
     name: "sleep",
     option: { time: 500 },
   }]);
   assertEquals(text, "Test");
-  assertEquals(details.length, 1);
-  assertEquals(details[0].ok, true);
+  assertEquals(results.length, 1);
+  assertEquals(results[0].ok, true);
 });
 
 Deno.test("callback", async () => {
@@ -117,25 +117,25 @@ Deno.test("callback", async () => {
     suffix,
     prefix,
   };
-  const endConvertFunctionDetails: ConverterConvertResultDetail<
+  const endConvertFunctionResults: ConverterConvertResult<
     typeof plugins
   >[] = [];
   const endConvertFunctionIndices: [number, number][] = [];
   const handleEndConvertFunction: ConverterEndConvertFunctionHandler<
     typeof plugins
   > = (detail, usingPluginsIndex, convertFunctionIndex) => {
-    endConvertFunctionDetails.push(detail);
+    endConvertFunctionResults.push(detail);
     endConvertFunctionIndices.push([usingPluginsIndex, convertFunctionIndex]);
   };
-  const endPluginConvertDetails: ConverterConvertResultDetail<
+  const endPluginConvertResults: ConverterConvertResult<
     typeof plugins
   >[] = [];
   const endPluginConvertIndices: number[] = [];
   const onEndPluginConvert: (
-    detail: ConverterConvertResultDetail<typeof plugins>,
+    detail: ConverterConvertResult<typeof plugins>,
     usingPluginsIndex: number,
   ) => void = (detail, usingPluginsIndex) => {
-    endPluginConvertDetails.push(detail);
+    endPluginConvertResults.push(detail);
     endPluginConvertIndices.push(usingPluginsIndex);
   };
   const converter = new Converter(plugins, {
@@ -143,7 +143,7 @@ Deno.test("callback", async () => {
     onEndConvertFunction: handleEndConvertFunction,
     onEndPluginConvert,
   });
-  const { text, details } = await converter.convert("Test", [
+  const { text, results } = await converter.convert("Test", [
     "double",
     {
       name: "prefix",
@@ -155,20 +155,20 @@ Deno.test("callback", async () => {
     },
   ]);
   assertEquals(text, "FooTestTestBar");
-  assertEquals(details.map(({ ok }) => ok), [true, true, true]);
-  assertInstanceOf(details[1].errors?.at(0), Error);
+  assertEquals(results.map(({ ok }) => ok), [true, true, true]);
+  assertInstanceOf(results[1].errors?.at(0), Error);
 
-  assertEquals(endConvertFunctionDetails.map(({ ok }) => ok), [
+  assertEquals(endConvertFunctionResults.map(({ ok }) => ok), [
     true,
     false,
     true,
     true,
   ]);
   assertEquals(endConvertFunctionIndices, [[0, 0], [1, 0], [1, 1], [2, 0]]);
-  assertInstanceOf(endConvertFunctionDetails[1].errors?.at(0), Error);
-  assertInstanceOf(endConvertFunctionDetails[2].errors?.at(0), Error);
+  assertInstanceOf(endConvertFunctionResults[1].errors?.at(0), Error);
+  assertInstanceOf(endConvertFunctionResults[2].errors?.at(0), Error);
 
-  assertEquals(endPluginConvertDetails, details);
+  assertEquals(endPluginConvertResults, results);
   assertEquals(endPluginConvertIndices, [0, 1, 2]);
 });
 
@@ -177,7 +177,7 @@ Deno.test("module plugin convert", async () => {
     cjp,
     genhera,
   }, { converterOption: { logLevel: "debug" } });
-  const { text, details } = await converter.convert(
+  const { text, results } = await converter.convert(
     "こんにちは。",
     [
       "cjp",
@@ -186,7 +186,7 @@ Deno.test("module plugin convert", async () => {
   );
 
   assertEquals(text, "ごんにさゎ。。。");
-  assertEquals(details.map(({ ok }) => ok), [true, true]);
+  assertEquals(results.map(({ ok }) => ok), [true, true]);
 });
 
 Deno.test("dynamic module plugin convert", async () => {
@@ -194,7 +194,7 @@ Deno.test("dynamic module plugin convert", async () => {
     cjpDynamic,
     genheraDynamic,
   }, { converterOption: { logLevel: "debug" } });
-  const { text, details } = await converter.convert(
+  const { text, results } = await converter.convert(
     "こんにちは。",
     [
       "cjpDynamic",
@@ -203,7 +203,7 @@ Deno.test("dynamic module plugin convert", async () => {
   );
 
   assertEquals(text, "ごんにさゎ。。。");
-  assertEquals(details.map(({ ok }) => ok), [true, true]);
+  assertEquals(results.map(({ ok }) => ok), [true, true]);
 });
 
 Deno.test("multiple plugins convert", async () => {
@@ -241,7 +241,7 @@ Deno.test("multiple plugins convert", async () => {
     error,
     sleep,
   }, { converterOption: { logLevel: "debug" } });
-  const { text, details } = await converter.convert(
+  const { text, results } = await converter.convert(
     "Test",
     [
       {
@@ -265,7 +265,7 @@ Deno.test("multiple plugins convert", async () => {
     ] as const,
   );
   assertEquals(text, "BazTestFooTestFooBar");
-  assertEquals(details.map(({ ok }) => ok), [
+  assertEquals(results.map(({ ok }) => ok), [
     true,
     true,
     true,
@@ -273,6 +273,6 @@ Deno.test("multiple plugins convert", async () => {
     true,
     true,
   ]);
-  assertInstanceOf(details[3].errors?.at(0), Error);
-  assertInstanceOf(details[4].errors?.at(0), Error);
+  assertInstanceOf(results[3].errors?.at(0), Error);
+  assertInstanceOf(results[4].errors?.at(0), Error);
 });

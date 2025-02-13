@@ -57,9 +57,9 @@
 
 export * from "./Converter.ts";
 export type {
-  ConverterConvertOrder,
+  ConverterConvertOutput,
+  ConverterConvertPluginOrder,
   ConverterConvertResult,
-  ConverterConvertResultDetail,
   ConverterEndConvertFunctionHandler,
   ConverterEndPluginConvertHandler,
   ConverterOption,
