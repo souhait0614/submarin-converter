@@ -8,7 +8,8 @@
 
 ## Full Example/Docs
 
-see [https://github.com/souhait0614/submarin-converter](https://github.com/souhait0614/submarin-converter#readme)
+see
+[https://github.com/souhait0614/submarin-converter](https://github.com/souhait0614/submarin-converter#readme)
 
 ## Base library
 

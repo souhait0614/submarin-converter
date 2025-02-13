@@ -32,7 +32,7 @@ const converter = new Converter({
   suffix,
 });
 
-const input = "ほげ"
+const input = "ほげ";
 
 const output = await converter.convert(
   input,
@@ -44,7 +44,7 @@ const output = await converter.convert(
     },
   ] as const,
 );
-console.log(output.text) // "ほげほげふが"
+console.log(output.text); // "ほげほげふが"
 ```
 
 ### Using plugins
@@ -59,7 +59,7 @@ const converter = new Converter({
   genhera,
 });
 
-const input = "こんにちは。"
+const input = "こんにちは。";
 
 const output = await converter.convert(
   input,
@@ -68,7 +68,7 @@ const output = await converter.convert(
     "genhera",
   ] as const,
 );
-console.log(output.text) // "ごんにさゎ。。。"
+console.log(output.text); // "ごんにさゎ。。。"
 ```
 
 ### Convert results
@@ -83,7 +83,7 @@ const converter = new Converter({
   genhera,
 });
 
-const input = "こんにちは。"
+const input = "こんにちは。";
 
 const output = await converter.convert(
   input,
@@ -93,9 +93,9 @@ const output = await converter.convert(
   ] as const,
 );
 // cjp convert result
-console.log(output.results[0].ok) // true
-console.log(output.results[0].convertedText) // "ごんにさは。"
+console.log(output.results[0].ok); // true
+console.log(output.results[0].convertedText); // "ごんにさは。"
 // genhera convert result
-console.log(output.results[1].ok) // true
-console.log(output.results[1].convertedText) // "ごんにさゎ。。。"
+console.log(output.results[1].ok); // true
+console.log(output.results[1].convertedText); // "ごんにさゎ。。。"
 ```
