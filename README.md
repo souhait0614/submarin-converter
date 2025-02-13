@@ -47,7 +47,7 @@ const output = await converter.convert(
 console.log(output.text); // "ほげほげふが"
 ```
 
-### Using plugins
+### Using plugin libraries
 
 ```typescript
 import { Converter, type Plugin } from "@submarin-converter/core";
