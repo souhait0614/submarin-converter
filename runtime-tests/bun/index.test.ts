@@ -3,11 +3,11 @@ import {
   type ConverterConvertResultDetail,
   type ConverterEndConvertFunctionHandler,
   type Plugin,
-} from "@submarin-converter/core";
-import cjp from "@submarin-converter/plugin-cjp";
-import genhera from "@submarin-converter/plugin-genhera";
-import cjpDynamic from "@submarin-converter/plugin-cjp/dynamic";
-import genheraDynamic from "@submarin-converter/plugin-genhera/dynamic";
+} from "../../built-packages/core/esm/index";
+import cjp from "../../built-packages/plugin-cjp/esm/index";
+import genhera from "../../built-packages/plugin-genhera/esm/index";
+import cjpDynamic from "../../built-packages/plugin-cjp/esm/dynamic";
+import genheraDynamic from "../../built-packages/plugin-genhera/esm/dynamic";
 import { assert, test } from "vitest";
 
 test("single convert", async () => {

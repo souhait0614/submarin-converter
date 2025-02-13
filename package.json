@@ -1,12 +1,10 @@
 {
   "scripts": {
+    "prepare": "deno run pretest-build",
     "test:node": "vitest --run --config ./runtime-tests/node/vitest.config.ts",
     "test:bun": "vitest --run --config ./runtime-tests/bun/vitest.config.ts"
   },
   "devDependencies": {
-    "@submarin-converter/core": "file:./built-packages/core",
-    "@submarin-converter/plugin-cjp": "file:./built-packages/plugin-cjp",
-    "@submarin-converter/plugin-genhera": "file:./built-packages/plugin-genhera",
     "vitest": "^3.0.5"
   }
 }
