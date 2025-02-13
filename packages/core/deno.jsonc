@@ -1,0 +1,17 @@
+{
+  "name": "@submarin-converter/core",
+  "version": "0.2.4",
+  "exports": "./src/index.ts",
+  "imports": {
+    "@rebeccastevens/deepmerge": "jsr:@rebeccastevens/deepmerge@^7.1.4"
+  },
+  "publish": {
+    "include": [
+      "README.md",
+      "deno.jsonc",
+      "package.json",
+      ".npmrc",
+      "src/**/*.ts"
+    ]
+  }
+}

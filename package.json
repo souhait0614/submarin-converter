@@ -3,12 +3,10 @@
     "test:node": "vitest --run --config ./runtime-tests/node/vitest.config.ts",
     "test:bun": "vitest --run --config ./runtime-tests/bun/vitest.config.ts"
   },
-  "dependencies": {
-    "deepmerge-ts": "^7.1.4"
-  },
   "devDependencies": {
-    "@submarin-converter/plugin-cjp": "npm:@jsr/submarin-converter__plugin-cjp@^0.3.2",
-    "@submarin-converter/plugin-genhera": "npm:@jsr/submarin-converter__plugin-genhera@^0.3.2",
+    "@submarin-converter/core": "file:./built-packages/core",
+    "@submarin-converter/plugin-cjp": "file:./built-packages/plugin-cjp",
+    "@submarin-converter/plugin-genhera": "file:./built-packages/plugin-genhera",
     "vitest": "^3.0.5"
   }
 }

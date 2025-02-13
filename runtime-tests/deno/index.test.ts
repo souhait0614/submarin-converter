@@ -1,13 +1,14 @@
-import { Converter, type Plugin } from "../../src/index.ts";
+import {
+  Converter,
+  type ConverterConvertResultDetail,
+  type ConverterEndConvertFunctionHandler,
+  type Plugin,
+} from "@submarin-converter/core";
 import { assertEquals, assertInstanceOf } from "@std/assert";
 import cjp from "@submarin-converter/plugin-cjp";
 import genhera from "@submarin-converter/plugin-genhera";
 import cjpDynamic from "@submarin-converter/plugin-cjp/dynamic";
 import genheraDynamic from "@submarin-converter/plugin-genhera/dynamic";
-import type {
-  ConverterConvertResultDetail,
-  ConverterEndConvertFunctionHandler,
-} from "../../src/types.ts";
 
 Deno.test("single convert", async () => {
   const double: Plugin<undefined> = {

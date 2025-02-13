@@ -1,0 +1,15 @@
+{
+  "name": "@submarin-converter/plugin-genhera",
+  "version": "0.3.3",
+  "exports": { ".": "./src/index.ts", "./dynamic": "./src/dynamic.ts" },
+  "imports": {
+    "genhera": "npm:genhera@^1.1.0"
+  },
+  "publish": {
+    "include": [
+      "README.md",
+      "deno.jsonc",
+      "src/**/*.ts"
+    ]
+  }
+}

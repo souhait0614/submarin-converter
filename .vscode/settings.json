@@ -1,5 +1,5 @@
 {
-  "deno.enable": true,
+  "deno.enablePaths": ["packages", "scripts", "runtime-tests/deno"],
   "deno.lint": true,
   "editor.defaultFormatter": "denoland.vscode-deno",
   "editor.formatOnSave": true

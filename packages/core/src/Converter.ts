@@ -10,7 +10,7 @@ import type {
 } from "./types.ts";
 import { defaultConverterOption } from "./constants.ts";
 import { Logger } from "./logger.ts";
-import { deepmerge } from "deepmerge-ts";
+import { deepmerge } from "@rebeccastevens/deepmerge";
 
 const makeFailedToConvertFunctionError = (
   name: string,

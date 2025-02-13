@@ -1,23 +1,20 @@
 {
-  "name": "@submarin-converter/core",
-  "version": "0.2.4",
-  "exports": "./src/index.ts",
+  "workspace": [
+    "./packages/core",
+    "./packages/plugin-cjp",
+    "./packages/plugin-genhera"
+  ],
   "imports": {
-    "@std/assert": "jsr:@std/assert@^1.0.11"
+    "@deno/dnt": "jsr:@deno/dnt@^0.41.3",
+    "@std/assert": "jsr:@std/assert@^1.0.11",
+    "@std/path": "jsr:@std/path@^1.0.8"
+  },
+  "tasks": {
+    "pretest-build": "deno run --allow-env --allow-read --allow-write --allow-run --allow-net scripts/pretest-build-packages.ts"
   },
   "test": {
     "include": [
       "runtime-tests/deno/**/*.test.ts"
-    ]
-  },
-  "publish": {
-    "include": [
-      "LICENSE",
-      "README.md",
-      "deno.jsonc",
-      "package.json",
-      ".npmrc",
-      "src/**/*.ts"
     ]
   }
 }
