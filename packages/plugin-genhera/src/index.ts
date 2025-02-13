@@ -16,10 +16,9 @@
  * ```
  */
 
-// @ts-types="./types/genhera.d.ts"
-import { generate } from "genhera";
 import type { Plugin } from "@submarin-converter/core";
 import { metaData } from "./constants.ts";
+import { generate } from "./genhera/index.ts";
 
 /** submarin-converterのPluginとして設定できるPlugin */
 const plugin: Plugin<undefined> = {

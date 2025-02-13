@@ -20,8 +20,7 @@ import type { Plugin } from "@submarin-converter/core";
 import { metaData } from "./constants.ts";
 
 const dynamicGenerate = async (text: string) => {
-  // @ts-types="./types/genhera.d.ts"
-  const { generate } = await import("genhera");
+  const { generate } = await import("./genhera/index.ts");
   return generate(text);
 };
 
