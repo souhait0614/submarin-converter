@@ -1,3 +1,5 @@
+/*! genhera.js v1.1.0 | MIT License | https://github.com/Submarinonline/genhera.js */
+
 export default {
   "あ": "ぁ",
   "い": "ぃ",

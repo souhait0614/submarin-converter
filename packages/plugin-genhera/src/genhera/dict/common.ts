@@ -1,3 +1,5 @@
+/*! genhera.js v1.1.0 | MIT License | https://github.com/Submarinonline/genhera.js */
+
 export default {
   "私|わたし|ワタシ|俺|おれ|オレ|僕|ぼく|ボク|うち|ウチ": "ｩﾁ",
   "いうか": "ゆーか",

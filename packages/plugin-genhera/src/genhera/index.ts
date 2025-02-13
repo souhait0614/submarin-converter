@@ -1,3 +1,5 @@
+/*! genhera.js v1.1.0 | MIT License | https://github.com/Submarinonline/genhera.js */
+
 import { json2Dict, replace } from "@submarin/generator";
 import type { TextData } from "@submarin/generator";
 
