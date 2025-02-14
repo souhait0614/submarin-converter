@@ -10,9 +10,9 @@
  *
  * const converter = new Converter({ cjp });
  *
- * const { text } = await converter.convert("怪しい日本語", ["cjp"]);
+ * const output = await converter.convert("怪しい日本語", ["cjp"]);
  *
- * console.log(text) // "怪レい日本语"
+ * console.log(output.text) // "怪レい日本语"
  * ```
  */
 

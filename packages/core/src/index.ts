@@ -18,7 +18,7 @@
  *   suffix,
  * });
  *
- * const { text } = await converter.convert(
+ * const output = await converter.convert(
  *   "Foo",
  *   [
  *     "double",
@@ -29,7 +29,7 @@
  *   ] as const,
  * );
  *
- * console.log(text) // "FooFooBar"
+ * console.log(output.text) // "FooFooBar"
  * ```
  *
  * @example
@@ -43,7 +43,7 @@
  *   genhera,
  * });
  *
- * const { text } = await converter.convert(
+ * const output = await converter.convert(
  *   "こんにちは。",
  *   [
  *     "cjp",
@@ -51,7 +51,7 @@
  *   ] as const,
  * );
  *
- * console.log(text) // "ごんにさゎ。。。"
+ * console.log(output.text) // "ごんにさゎ。。。"
  * ```
  */
 

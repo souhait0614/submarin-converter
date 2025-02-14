@@ -10,9 +10,9 @@
  *
  * const converter = new Converter({ genhera });
  *
- * const { text } = await converter.convert("メロスは激怒した。", ["genhera"]);
+ * const output = await converter.convert("メロスは激怒した。", ["genhera"]);
  *
- * console.log(text) // "ﾒﾛｽゎ激怒した。。。"
+ * console.log(output.text) // "ﾒﾛｽゎ激怒した。。。"
  * ```
  */
 
