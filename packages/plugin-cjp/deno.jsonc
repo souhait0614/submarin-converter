@@ -1,6 +1,6 @@
 {
   "name": "@submarin-converter/plugin-cjp",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "exports": { ".": "./src/index.ts", "./dynamic": "./src/dynamic.ts" },
   "imports": {
     "cjp": "npm:cjp@^2.3.1"
