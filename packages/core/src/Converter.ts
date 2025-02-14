@@ -96,6 +96,7 @@ export class Converter<
   ) {
     this.#logger = new Logger(
       options.converterOption?.logLevel ?? defaultConverterOption.logLevel,
+      options.converterOption?.logger,
     );
     this.#logger.debug("Logger is initialized:", this.#logger);
     this.#logger.debug("Converter constructor is called:", {

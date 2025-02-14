@@ -1,4 +1,4 @@
-import type { LogLevels } from "./logger.ts";
+import type { LoggerFunctions, LogLevels } from "./logger.ts";
 
 export type PromiseOrValue<T> = T | PromiseLike<T>;
 
@@ -53,6 +53,7 @@ export type Plugin<
 export interface ConverterOption {
   interruptWithPluginError?: boolean;
   logLevel?: LogLevels;
+  logger?: Partial<LoggerFunctions>;
 }
 
 export type ConverterPluginOrder<
