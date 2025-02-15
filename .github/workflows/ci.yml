@@ -13,7 +13,7 @@ jobs:
         with:
           deno-version: v2.x
       - run: deno install
-      - run: deno test
+      - run: deno test --allow-net
   node:
     name: "Node"
     runs-on: ubuntu-latest
