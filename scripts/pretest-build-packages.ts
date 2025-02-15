@@ -31,6 +31,12 @@ const packages = [
       "./dynamic": "./src/dynamic.ts",
     },
   },
+  {
+    name: "plugin-nomlish",
+    exports: {
+      ".": "./src/index.ts",
+    },
+  },
 ] as const satisfies Package[];
 
 for await (const pkg of packages) {

@@ -2,7 +2,8 @@
   "workspace": [
     "./packages/core",
     "./packages/plugin-cjp",
-    "./packages/plugin-genhera"
+    "./packages/plugin-genhera",
+    "./packages/plugin-nomlish"
   ],
   "imports": {
     "@deno/dnt": "jsr:@deno/dnt@^0.41.3",

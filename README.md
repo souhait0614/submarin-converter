@@ -99,3 +99,12 @@ console.log(output.results[0].convertedText); // "ごんにさは。"
 console.log(output.results[1].ok); // true
 console.log(output.results[1].convertedText); // "ごんにさゎ。。。"
 ```
+
+## Development
+
+```shell
+git clone https://github.com/souhait0614/submarin-converter.git
+cd submarin-converter
+deno install
+deno test --allow-net
+```

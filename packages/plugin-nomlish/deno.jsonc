@@ -1,0 +1,15 @@
+{
+  "name": "@submarin-converter/plugin-nomlish",
+  "version": "0.0.0",
+  "exports": { ".": "./src/index.ts" },
+  "imports": {
+    "@souhait0614/nomlish-translator": "jsr:@souhait0614/nomlish-translator@^0.2.0"
+  },
+  "publish": {
+    "include": [
+      "README.md",
+      "deno.jsonc",
+      "src/**/*.ts"
+    ]
+  }
+}
