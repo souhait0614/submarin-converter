@@ -1,6 +1,6 @@
 {
   "name": "@submarin-converter/plugin-nomlish",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "exports": { ".": "./src/index.ts" },
   "imports": {
     "@souhait0614/nomlish-translator": "jsr:@souhait0614/nomlish-translator@^0.2.0"
