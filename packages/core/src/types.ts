@@ -1,13 +1,13 @@
 import type { LoggerFunctions, LogLevels } from "./logger.ts";
 
-export type PromiseOrValue<T> = T | PromiseLike<T>;
+export type Promisable<T> = T | PromiseLike<T>;
 
 /** Pluginの文字列変換関数 */
 export type PluginConvertFunction<
   TOption extends object | undefined,
 > = TOption extends object
-  ? (text: string, option: Partial<TOption>) => PromiseOrValue<string>
-  : (text: string) => PromiseOrValue<string>;
+  ? (text: string, option: Partial<TOption>) => Promisable<string>
+  : (text: string) => Promisable<string>;
 
 /** Pluginに設定できる情報 */
 export interface PluginMetaData {
