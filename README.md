@@ -7,11 +7,12 @@
 
 ## Packages
 
-| name                                                                                    | version                                                                                                                              | description                |
-| --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | -------------------------- |
-| [@submarin-converter/core](https://jsr.io/@submarin-converter/core)                     | [![core JSR](https://jsr.io/badges/@submarin-converter/core)](https://jsr.io/@submarin-converter/core)                               | submarin-converter本体     |
-| [@submarin-converter/plugin-cjp](https://jsr.io/@submarin-converter/plugin-cjp)         | [![plugin-cjp JSR](https://jsr.io/badges/@submarin-converter/plugin-cjp)](https://jsr.io/@submarin-converter/plugin-cjp)             | 怪レい日本语プラグイン     |
-| [@submarin-converter/plugin-genhera](https://jsr.io/@submarin-converter/plugin-genhera) | [![plugin-genhera JSR](https://jsr.io/badges/@submarin-converter/plugin-genhera)](https://jsr.io/@submarin-converter/plugin-genhera) | ﾒﾝﾍﾗっぽぃ日本語プラグイン |
+| name                                                                                    | version                                                                                                                              | description                              |
+| --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------- |
+| [@submarin-converter/core](https://jsr.io/@submarin-converter/core)                     | [![core JSR](https://jsr.io/badges/@submarin-converter/core)](https://jsr.io/@submarin-converter/core)                               | submarin-converter本体                   |
+| [@submarin-converter/plugin-cjp](https://jsr.io/@submarin-converter/plugin-cjp)         | [![plugin-cjp JSR](https://jsr.io/badges/@submarin-converter/plugin-cjp)](https://jsr.io/@submarin-converter/plugin-cjp)             | 怪レい日本语プラグイン                   |
+| [@submarin-converter/plugin-genhera](https://jsr.io/@submarin-converter/plugin-genhera) | [![plugin-genhera JSR](https://jsr.io/badges/@submarin-converter/plugin-genhera)](https://jsr.io/@submarin-converter/plugin-genhera) | ﾒﾝﾍﾗっぽぃ日本語プラグイン               |
+| [@submarin-converter/plugin-nomlish](https://jsr.io/@submarin-converter/plugin-nomlish) | [![plugin-nomlish JSR](https://jsr.io/badges/@submarin-converter/plugin-nomlish)](https://jsr.io/@submarin-converter/plugin-nomlish) | 最終にして究極の幻想風の日本語プラグイン |
 
 ## Example
 
