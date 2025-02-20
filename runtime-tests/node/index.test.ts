@@ -276,3 +276,41 @@ test("multiple plugins convert", async () => {
   assert.instanceOf(results[3].errors?.at(0), Error);
   assert.instanceOf(results[4].errors?.at(0), Error);
 });
+
+test("context", async () => {
+  const pluginNames: Plugin<undefined> = {
+    convertFunctions: [
+      (_text, _option, context) =>
+        Object.keys(context.plugins ?? {}).sort().join(","),
+    ],
+  };
+  const suffix: Plugin<{ suffix: string }> = {
+    defaultOption: { suffix: "" },
+    convertFunctions: [
+      (_text, option, context) =>
+        String(context.currentResults.at(-1)?.ok) + option.suffix,
+    ],
+  };
+  const converter = new Converter({
+    pluginNames,
+    suffix,
+  }, { converterOption: { logLevel: "debug" } });
+  const { text, results } = await converter.convert("Test", [
+    "pluginNames",
+    {
+      name: "suffix",
+      option: { suffix: "Foo" },
+    },
+  ]);
+  assert.deepEqual(
+    text,
+    "trueFoo",
+  );
+  assert.deepEqual(results.length, 2);
+  assert.deepEqual(results[0].ok, true);
+  assert.deepEqual(
+    results[0].convertedText,
+    Object.keys(converter.plugins).sort().join(","),
+  );
+  assert.deepEqual(results[1].ok, true);
+});

@@ -7,6 +7,7 @@ import type {
   ConverterPluginOrder,
   Plugin,
   PluginConvertFunction,
+  PluginConvertFunctionContext,
 } from "./types.ts";
 import { defaultConverterOption } from "./constants.ts";
 import { Logger } from "./logger.ts";
@@ -201,7 +202,7 @@ export class Converter<
         break;
       }
       const mergedOption = plugin.defaultOption
-        ? deepmerge(
+        ? deepmerge<[object, object]>(
           plugin.defaultOption,
           option ?? {},
         )
@@ -227,6 +228,10 @@ export class Converter<
         )
       ) {
         const convertFunctionIndex = Number(convertFunctionIndexString);
+        const pluginConvertFunctionContext: PluginConvertFunctionContext = {
+          plugins: this.plugins,
+          currentResults: results,
+        };
         try {
           this.#logger.debug(
             `try convert function index: ${convertFunctionIndex}`,
@@ -238,7 +243,10 @@ export class Converter<
           );
           convertedText = await convertFunction(
             convertedText,
-            mergedOption,
+            mergedOption as typeof plugin.defaultOption extends object
+              ? typeof plugin.defaultOption
+              : never,
+            pluginConvertFunctionContext,
           );
           detail.ok = true;
           detail.convertedText = convertedText;

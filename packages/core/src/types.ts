@@ -5,9 +5,16 @@ export type Promisable<T> = T | PromiseLike<T>;
 /** Pluginの文字列変換関数 */
 export type PluginConvertFunction<
   TOption extends object | undefined,
-> = TOption extends object
-  ? (text: string, option: Partial<TOption>) => Promisable<string>
-  : (text: string) => Promisable<string>;
+> = TOption extends object ? (
+    text: string,
+    option: Partial<TOption>,
+    context: PluginConvertFunctionContext,
+  ) => Promisable<string>
+  : (
+    text: string,
+    option: never,
+    context: PluginConvertFunctionContext,
+  ) => Promisable<string>;
 
 /** Pluginに設定できる情報 */
 export interface PluginMetaData {
@@ -167,3 +174,11 @@ export type ConverterEndConvertFunctionHandler<
   usingPluginsIndex: number,
   convertFunctionIndex: number,
 ) => void;
+
+export interface PluginConvertFunctionContext {
+  plugins: Record<string, Plugin<object | undefined>>;
+  currentResults: ConverterConvertResult<
+    Record<string, Plugin<object | undefined>>,
+    string
+  >[];
+}

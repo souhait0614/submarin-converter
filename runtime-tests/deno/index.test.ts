@@ -276,3 +276,41 @@ Deno.test("multiple plugins convert", async () => {
   assertInstanceOf(results[3].errors?.at(0), Error);
   assertInstanceOf(results[4].errors?.at(0), Error);
 });
+
+Deno.test("context", async () => {
+  const pluginNames: Plugin<undefined> = {
+    convertFunctions: [
+      (_text, _option, context) =>
+        Object.keys(context.plugins ?? {}).sort().join(","),
+    ],
+  };
+  const suffix: Plugin<{ suffix: string }> = {
+    defaultOption: { suffix: "" },
+    convertFunctions: [
+      (_text, option, context) =>
+        String(context.currentResults.at(-1)?.ok) + option.suffix,
+    ],
+  };
+  const converter = new Converter({
+    pluginNames,
+    suffix,
+  }, { converterOption: { logLevel: "debug" } });
+  const { text, results } = await converter.convert("Test", [
+    "pluginNames",
+    {
+      name: "suffix",
+      option: { suffix: "Foo" },
+    },
+  ]);
+  assertEquals(
+    text,
+    "trueFoo",
+  );
+  assertEquals(results.length, 2);
+  assertEquals(results[0].ok, true);
+  assertEquals(
+    results[0].convertedText,
+    Object.keys(converter.plugins).sort().join(","),
+  );
+  assertEquals(results[1].ok, true);
+});
