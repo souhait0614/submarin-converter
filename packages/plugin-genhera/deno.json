@@ -1,7 +1,10 @@
 {
   "name": "@submarin-converter/plugin-genhera",
-  "version": "0.4.4",
-  "exports": { ".": "./src/index.ts", "./dynamic": "./src/dynamic.ts" },
+  "version": "0.5.0",
+  "exports": {
+    ".": "./src/index.ts",
+    "./dynamic": "./src/dynamic.ts"
+  },
   "imports": {
     "@submarin/generator": "npm:@submarin/generator@^2.2.0"
   },
