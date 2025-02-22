@@ -108,7 +108,7 @@ export class Converter<
       Record<TPluginIDs, Plugin<object | undefined>>
     > = {};
     Object.entries(plugins).forEach(
-      ([name, { defaultOption, convertFunctions }]) => {
+      ([name, { defaultOption, convertFunctions, ...pluginProps }]) => {
         const pluginOption = options.pluginOptions?.[name as TPluginIDs];
         const extendConvertFunction = options.extendConvertFunctions?.[
           name as TPluginIDs
@@ -120,6 +120,7 @@ export class Converter<
               : defaultOption,
             convertFunctions: extendConvertFunction?.(convertFunctions) ??
               convertFunctions,
+            ...pluginProps,
           };
           tempPlugins[name as TPluginIDs] = plugin;
           this.#logger.debug(`Plugin "${name}" is loaded.`, plugin);
@@ -127,6 +128,7 @@ export class Converter<
           const plugin = {
             convertFunctions: (extendConvertFunction?.(convertFunctions) ??
               convertFunctions) as PluginConvertFunction<undefined>[],
+            ...pluginProps,
           };
           tempPlugins[name as TPluginIDs] = plugin;
           this.#logger.debug(`Plugin "${name}" is loaded.`, plugin);
