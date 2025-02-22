@@ -1,6 +1,6 @@
 {
   "name": "@submarin-converter/core",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "exports": "./src/index.ts",
   "imports": {
     "@rebeccastevens/deepmerge": "jsr:@rebeccastevens/deepmerge@^7.1.4"
