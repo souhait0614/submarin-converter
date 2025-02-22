@@ -10,7 +10,7 @@
   "publish": {
     "include": [
       "README.md",
-      "deno.jsonc",
+      "deno.json",
       "src/**/*.ts"
     ]
   }

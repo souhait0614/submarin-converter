@@ -50,7 +50,7 @@ for await (const pkg of packages) {
     shims: {
       deno: true,
     },
-    importMap: `./packages/${pkg.name}/deno.jsonc`,
+    importMap: `./packages/${pkg.name}/deno.json`,
     test: false,
     typeCheck: false,
     package: {

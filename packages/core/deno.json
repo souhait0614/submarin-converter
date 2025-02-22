@@ -8,7 +8,7 @@
   "publish": {
     "include": [
       "README.md",
-      "deno.jsonc",
+      "deno.json",
       "package.json",
       ".npmrc",
       "src/**/*.ts"
